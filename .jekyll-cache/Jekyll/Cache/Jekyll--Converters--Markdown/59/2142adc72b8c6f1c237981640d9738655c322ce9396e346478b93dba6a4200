@@ -1,0 +1,59 @@
+I"k	<blockquote>
+  <p>“🙉🙉🙉 ”</p>
+</blockquote>
+
+<h2 id="前言">前言</h2>
+
+<p>After meeting many obstacles, I copied a repository from qiubaiying.</p>
+
+<p>The original repository is <a href="https://github.com/qiubaiying/qiubaiying.github.io">https://github.com/qiubaiying/qiubaiying.github.io</a></p>
+
+<p>Although I know nothing about html and little about GitHUb.</p>
+
+<p>Or more critically, I am learning German right now.</p>
+
+<p>SO everytime I start writing something with English, German jumps out and vice versa.</p>
+
+<p>The reason why I start my blog is that I think it’s time to sort my codes and projects out</p>
+
+<p id="build"></p>
+<hr />
+
+<h2 id="正文">正文</h2>
+
+<p>I will briefly describe the way I did to build this Blog.</p>
+
+<p>Firstly, with the help of qiubaiying, i mean his Blog. <a href="https://github.com/qiubaiying/qiubaiying.github.io/wiki/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B">博客搭建详细教程</a></p>
+
+<p>I could barely understand where to put tiles and how to make it work.</p>
+
+<p>But things get difficult when I was trying to reach github.com since its DNS got polluted by GFW.</p>
+
+<p>It takes me a few minutes to deal with that. And specific solution could be found in <a href="https://zhuanlan.zhihu.com/p/65154116">国内加速访问Github的办法，超级简单</a>.</p>
+
+<p>This way is basically changing the pin address of domain in China by modifying the host.</p>
+
+<p>By the time 2020/3/24 21:00 GMT+8, the hosts are as following:</p>
+
+<p>140.82.112.4 github.com</p>
+
+<p>185.199.108.153 assets-cdn.github.com</p>
+
+<p>199.232.5.194 github.global.ssl.fastly.net</p>
+
+<p>52.216.93.131 github-cloud.s3.amazonaws.com</p>
+
+<p>Secondly, as I am writing this post, wierd thing comes up that the page i pushed does not appear on my site.</p>
+
+<p>Then I realize that this process may related with jekyll and i go back to install jekyll on Windows.</p>
+
+<p>The tutorial for jekyll is <a href="http://jekyllcn.com/docs/windows/#installation">jekyll on windows</a></p>
+
+<p>which required for something called <a href="https://chocolatey.org/install">Chocolatey</a></p>
+
+<p>After seveal command lines, i mean a lot of ones. (i am still waiting for the installation so that i could write this post)</p>
+
+<p>I am quite curious that with 300Mb internet bandwidth it still takes like a year to download a 40Mb-file.</p>
+
+<hr />
+:ET
