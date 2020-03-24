@@ -44,9 +44,32 @@ It takes me a few minutes to deal with that. And specific solution could be foun
 This way is basically changing the pin address of domain in China by modifying the host.
 
 By the time 2020/3/24 21:00 GMT+8, the hosts are as following:
+
 140.82.112.4 github.com
+
 185.199.108.153 assets-cdn.github.com
+
 199.232.5.194 github.global.ssl.fastly.net
+
 52.216.93.131 github-cloud.s3.amazonaws.com
+
+Secondly, as I am writing this post, wierd thing comes up that the page i pushed does not appear on my site.
+
+Then I realize that this process may related with jekyll and i go back to install jekyll on Windows.
+
+The tutorial for jekyll is [jekyll on windows](http://jekyllcn.com/docs/windows/#installation)
+
+which required for something called [Chocolatey](https://chocolatey.org/install)
+
+After seveal command lines, i mean a lot of ones. (i am still waiting for the installation so that i could write this post)
+
+I am quite curious that with 300Mb internet bandwidth it still takes like a year to download a 40Mb-file.
+
+And some other wierd things come up, saying "ERROR:  Could not find a valid gem 'nokogiri' (>= 0), here is why:
+          Unable to download data from <https://rubygems.org/> - SSL_connect returned=1 errno=0 state=SSLv3 read server certificate B: certificate verify failed (<https://api.rubygems.org/specs.4.8.gz>)"
+
+It seems like i have not proper SSL to download nokogiri and after googling for the solution, i decide to take another approach which demonstrated on <https://jekyllrb.com/docs/installation/windows/>
+
+As i was checking my wechat message, the installation seems finished.
 
 ---
