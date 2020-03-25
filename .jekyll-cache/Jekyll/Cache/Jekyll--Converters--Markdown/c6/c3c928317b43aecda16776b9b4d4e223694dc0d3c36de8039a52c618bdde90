@@ -1,0 +1,169 @@
+I"3$<h2 id="something-to-say">Something to say</h2>
+
+<p>After meeting many obstacles, I copied a repository from qiubaiying.</p>
+
+<p>The original repository is <a href="https://github.com/qiubaiying/qiubaiying.github.io">https://github.com/qiubaiying/qiubaiying.github.io</a></p>
+
+<p>Although I know nothing about html and little about GitHUb.</p>
+
+<p>Or more critically, I am learning German right now.</p>
+
+<p>SO everytime I start writing something with English, German jumps out and vice versa.</p>
+
+<p>The reason why I start my blog is that I think it’s time to sort my codes and projects out</p>
+
+<hr />
+
+<h2 id="process">Process</h2>
+
+<p>I will briefly describe the way I did to build this Blog.</p>
+
+<h3 id="1-github-part">1. github part</h3>
+
+<p>Firstly, with the help of qiubaiying, i mean his Blog. <a href="https://github.com/qiubaiying/qiubaiying.github.io/wiki/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B">博客搭建详细教程</a></p>
+
+<p>I could barely understand where to put tiles and how to make it work.</p>
+
+<p>But things get difficult when I was trying to reach github.com since its DNS got polluted by GFW.</p>
+
+<h4 id="1--accelerate-github-access">1*  accelerate github access</h4>
+
+<p>It takes me a few minutes to deal with that. And specific solution could be found in <a href="https://zhuanlan.zhihu.com/p/65154116">国内加速访问Github的办法，超级简单</a>.</p>
+
+<p>This way is basically changing the pin address of domain in China by modifying the host.</p>
+
+<p>By the time 2020/3/24 21:00 GMT+8, the hosts are as following:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>140.82.112.4 github.com
+
+185.199.108.153 assets-cdn.github.com
+
+199.232.5.194 github.global.ssl.fastly.net
+
+52.216.93.131 github-cloud.s3.amazonaws.com
+</code></pre></div></div>
+
+<h3 id="2-jekyll-part">2. jekyll part</h3>
+
+<p>Secondly, as I am writing this post, wierd thing comes up that the page i pushed does not appear on my site.</p>
+
+<p>Then I realize that this process may related with jekyll and i go back to install jekyll on Windows.</p>
+
+<p>The tutorial for jekyll is <a href="http://jekyllcn.com/docs/windows/#installation">jekyll on windows</a></p>
+
+<p>which required for something called <a href="https://chocolatey.org/install">Chocolatey</a></p>
+
+<p>After seveal command lines, i mean a lot of ones. (i am still waiting for the installation so that i could write this post)</p>
+
+<p>I am quite curious that with 300Mb internet bandwidth it still takes like a year to download a 40Mb-file.</p>
+
+<p>And some other wierd things come up, saying “ERROR:  Could not find a valid gem ‘nokogiri’ (&gt;= 0), here is why:
+          Unable to download data from <a href="https://rubygems.org/">https://rubygems.org/</a> - SSL_connect returned=1 errno=0 state=SSLv3 read server certificate B: certificate verify failed (<a href="https://api.rubygems.org/specs.4.8.gz">https://api.rubygems.org/specs.4.8.gz</a>)”</p>
+
+<p>It seems like i have not proper SSL to download nokogiri and after googling for the solution, i decide to take another approach which demonstrated on <a href="https://jekyllrb.com/docs/installation/windows/">https://jekyllrb.com/docs/installation/windows/</a></p>
+
+<p>As i was checking my wechat message, the installation finished and finally it works.</p>
+
+<hr />
+
+<h3 id="3-how-to-use-jekyll">3. How to use Jekyll</h3>
+
+<p>Finally, I managed to set up Jekyll environment on my windows 10. And it seems a little bit intrige to use Jekyll since I an a little white and know nothing about bash except some simple linux commandlines, however, it really helps (:.</p>
+
+<h4 id="31-basic-commands">3.1 Basic commands</h4>
+
+<p>The first thing to do is open your cmd.exe with win+R or windows powershell and go into the repo directory.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> <span class="o">{</span>your repository directory<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Then you could run jekyll and see if it works using <code class="highlighter-rouge">jekyll</code> and if it shows as following, it proves working.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A subcommand is required.
+jekyll 4.0.0 <span class="nt">--</span> Jekyll is a blog-aware, static site generator <span class="k">in </span>Ruby
+
+Usage:
+
+  jekyll &lt;subcommand&gt; <span class="o">[</span>options]
+
+Options:
+        <span class="nt">-s</span>, <span class="nt">--source</span> <span class="o">[</span>DIR]  Source directory <span class="o">(</span>defaults to ./<span class="o">)</span>
+        <span class="nt">-d</span>, <span class="nt">--destination</span> <span class="o">[</span>DIR]  Destination directory <span class="o">(</span>defaults to ./_site<span class="o">)</span>
+            <span class="nt">--safe</span>         Safe mode <span class="o">(</span>defaults to <span class="nb">false</span><span class="o">)</span>
+        <span class="nt">-p</span>, <span class="nt">--plugins</span> PLUGINS_DIR1[,PLUGINS_DIR2[,...]]  Plugins directory <span class="o">(</span>defaults to ./_plugins<span class="o">)</span>
+            <span class="nt">--layouts</span> DIR  Layouts directory <span class="o">(</span>defaults to ./_layouts<span class="o">)</span>
+            <span class="nt">--profile</span>      Generate a Liquid rendering profile
+        <span class="nt">-h</span>, <span class="nt">--help</span>         Show this message
+        <span class="nt">-v</span>, <span class="nt">--version</span>      Print the name and version
+        <span class="nt">-t</span>, <span class="nt">--trace</span>        Show the full backtrace when an error occurs
+
+Subcommands:
+  compose
+  docs
+  import
+  build, b              Build your site
+  clean                 Clean the site <span class="o">(</span>removes site output and metadata file<span class="o">)</span> without building.
+  doctor, hyde          Search site and print specific deprecation warnings
+  <span class="nb">help                  </span>Show the <span class="nb">help </span>message, optionally <span class="k">for </span>a given subcommand.
+  new                   Creates a new Jekyll site scaffold <span class="k">in </span>PATH
+  new-theme             Creates a new Jekyll theme scaffold
+  serve, server, s      Serve your site locally
+</code></pre></div></div>
+
+<p>Codes above also shows what basic commands for Jekyll are.</p>
+
+<h3 id="32-getting-start">3.2 Getting Start</h3>
+
+<ol>
+  <li>
+    <p>Fork your favourite theme from <a href="https://github.com/jekyll/jekyll/wiki/sites">wiki of Jekyll</a></p>
+  </li>
+  <li>
+    <p>Clone the repo into your computer(optional since i live in China and the github connection sucks). Because i use github desktop, it would not be any problem to clone and push.</p>
+  </li>
+  <li>
+    <p>Open folder <code class="highlighter-rouge">_posts</code> and there should be some examples, if not, create one with name must be in the correct form.</p>
+
+    <ul>
+      <li>yyyy-mm-dd-title.md
+ example: ‘2020-03-24-example.md’</li>
+    </ul>
+  </li>
+  <li>
+    <p>Open the file you just created with code or notepad. And add some headings required by the theme. My headings are, for example but not always be effective in your repo.</p>
+  </li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">---</span>
+layout:     post
+title:      My First Blog on Github.io
+subtitle:    <span class="s2">"</span><span class="se">\"</span><span class="s2">Hello World, Hello Blog</span><span class="se">\"</span><span class="s2">"</span>
+<span class="nb">date</span>:       2020-03-24
+author:     BY
+header-img: img/what-is-a-blog.png
+catalog: <span class="nb">true
+</span>tags:
+    - Blog Build
+<span class="nt">---</span>
+</code></pre></div></div>
+
+<p>which specifies the layout, title, date and auther required by my theme.</p>
+
+<ol>
+  <li>
+    <p>Write your post with markdown and you could also download code extensions for Markdown language. It’s basically a easy language of text editing and you could find how to write that in <a href="en.wikipedia.org/wiki/Markdown">markdown_wikipedia</a>.</p>
+  </li>
+  <li>
+    <p>Save the text and go back to windows command line, i.e. cmd or powershell whatever you just used to check jekyll.</p>
+  </li>
+  <li>
+    <p>Run command <code class="highlighter-rouge">jekyll build --w</code> which i prefer to use <code class="highlighter-rouge">--w</code> or <code class="highlighter-rouge">--watch</code> meaning to monitor all changes in the file so that i can preview without run more commands.</p>
+  </li>
+  <li>
+    <p>Before <em>STEP 7</em> you may need to run command <code class="highlighter-rouge">jekyll serve</code> or <code class="highlighter-rouge">jekyll s</code> which enables you to build the serve on your local computer and see your web on your browser in <a href="http://localhost:4000">localhost</a>.</p>
+  </li>
+  <li>
+    <p>Finally, after all the editing, push your repo onto github, after few minutes you may see your Blog article on your github.io.</p>
+  </li>
+</ol>
+:ET
