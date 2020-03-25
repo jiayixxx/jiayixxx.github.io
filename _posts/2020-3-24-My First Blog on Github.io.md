@@ -141,21 +141,21 @@ Codes above also shows what basic commands for Jekyll are.
 
 4. Open the file you just created with code or notepad. And add some headings required by the theme. My headings are, for example but not always be effective in your repo.
 
-```bash
----
-layout:     post
-title:      My First Blog on Github.io
-subtitle:    "\"Hello World, Hello Blog\""
-date:       2020-03-24
-author:     BY
-header-img: img/what-is-a-blog.png
-catalog: true
-tags:
-    - Blog Build
----
-```
+    ```bash
+    ---
+    layout:     post
+    title:      My First Blog on Github.io
+    subtitle:    "\"Hello World, Hello Blog\""
+    date:       2020-03-24
+    author:     BY
+    header-img: img/what-is-a-blog.png
+    catalog: true
+    tags:
+        - Blog Build
+    ---
+    ```
 
-which specifies the layout, title, date and auther required by my theme.
+    which specifies the layout, title, date and auther required by my theme.
 
 5. Write your post with markdown and you could also download code extensions for Markdown language. It's basically a easy language of text editing and you could find how to write that in [markdown_wikipedia](en.wikipedia.org/wiki/Markdown).
 

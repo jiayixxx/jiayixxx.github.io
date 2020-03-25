@@ -1,4 +1,4 @@
-I"3$<h2 id="something-to-say">Something to say</h2>
+I">$<h2 id="something-to-say">Something to say</h2>
 
 <p>After meeting many obstacles, I copied a repository from qiubaiying.</p>
 
@@ -131,25 +131,22 @@ Subcommands:
   </li>
   <li>
     <p>Open the file you just created with code or notepad. And add some headings required by the theme. My headings are, for example but not always be effective in your repo.</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nt">---</span>
+ layout:     post
+ title:      My First Blog on Github.io
+ subtitle:    <span class="s2">"</span><span class="se">\"</span><span class="s2">Hello World, Hello Blog</span><span class="se">\"</span><span class="s2">"</span>
+ <span class="nb">date</span>:       2020-03-24
+ author:     BY
+ header-img: img/what-is-a-blog.png
+ catalog: <span class="nb">true
+ </span>tags:
+     - Blog Build
+ <span class="nt">---</span>
+</code></pre></div>    </div>
+
+    <p>which specifies the layout, title, date and auther required by my theme.</p>
   </li>
-</ol>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">---</span>
-layout:     post
-title:      My First Blog on Github.io
-subtitle:    <span class="s2">"</span><span class="se">\"</span><span class="s2">Hello World, Hello Blog</span><span class="se">\"</span><span class="s2">"</span>
-<span class="nb">date</span>:       2020-03-24
-author:     BY
-header-img: img/what-is-a-blog.png
-catalog: <span class="nb">true
-</span>tags:
-    - Blog Build
-<span class="nt">---</span>
-</code></pre></div></div>
-
-<p>which specifies the layout, title, date and auther required by my theme.</p>
-
-<ol>
   <li>
     <p>Write your post with markdown and you could also download code extensions for Markdown language. It’s basically a easy language of text editing and you could find how to write that in <a href="en.wikipedia.org/wiki/Markdown">markdown_wikipedia</a>.</p>
   </li>
