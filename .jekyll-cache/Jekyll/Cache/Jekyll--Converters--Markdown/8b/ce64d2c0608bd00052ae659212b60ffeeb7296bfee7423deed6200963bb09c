@@ -1,4 +1,4 @@
-I"."<h2 id="something-to-say">Something to say</h2>
+I"S"<h2 id="something-to-say">Something to say</h2>
 
 <p>Recently I participate a contest named Integrate Circuit Innovation Contest which requires me to use WJ100 developed by Ali Inc. team Pinhead and a FPGA develop board with Xlinx XC7A200TR3B Core. It’s not my first time to cope with FPGA but still, I find it difficult to interpret Verilog Code and make the FPGA works. Luckily, with the help of WJ100 Sdk and CDK(C-sky Develop Kit) which developed by Ali Inc. we could jump the Verilog and long waiting synthesizing part directly to use the pre-setted circuit and easy writing C to develop.</p>
 
@@ -61,7 +61,7 @@
     <p>Prep your Vivado, I use vivado 2018.3, but as I believe the newer or older versions could also work, the demonstration all runs in vivado 2018.3 HLX Edition and windows 10.</p>
 
     <p>3.1 Open your vivado and create a new RTL project.
-     <img src="imgchr.com/i/GpwkLR" alt="step3.1" /></p>
+     <img src="![GpwkLR.png](https://s1.ax1x.com/2020/03/26/GpwkLR.png)" alt="step3.1" /></p>
 
     <p>3.2 Add source directory <code class="highlighter-rouge">./wujian100_open/soc</code> and <code class="highlighter-rouge">wujian100_open_fpga_top.v</code> in directory <code class="highlighter-rouge">./wujian100_open/fpga</code>.</p>
 
