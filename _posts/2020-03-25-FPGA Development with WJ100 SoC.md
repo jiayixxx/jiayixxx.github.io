@@ -66,7 +66,7 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
 3. Prep your Vivado, I use vivado 2018.3, but as I believe the newer or older versions could also work, the demonstration all runs in vivado 2018.3 HLX Edition and windows 10.
 
     3.1 Open your vivado and create a new RTL project.
-        ![step3.1](![GpwkLR.png](https://s1.ax1x.com/2020/03/26/GpwkLR.png))
+        ![step3.1](https://s1.ax1x.com/2020/03/26/GpwkLR.png)
 
     3.2 Add source directory `./wujian100_open/soc` and `wujian100_open_fpga_top.v` in directory `./wujian100_open/fpga`.
 
