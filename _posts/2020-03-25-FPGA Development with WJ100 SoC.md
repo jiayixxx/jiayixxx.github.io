@@ -71,24 +71,24 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
     3.2 Add source directory `./wujian100_open/soc` and `wujian100_open_fpga_top.v` in directory `./wujian100_open/fpga`.
 
     3.3 Check `Scan and add RTL files into project`, `copy source into project` and `add sources from subdirectory`.
-        ![step3.2](imgchr.com/i/GpwmFK)
+        ![step3.2](https://s1.ax1x.com/2020/03/26/GpwmFK.png)
 
     3.4 Add constrain file `XC7A200T3B` in directory `./wujian100_open/fpga/xdc` and check `copy constrain into project`
-        ![step3.4](imgchr.com/i/GpwZo6)
+        ![step3.4](https://s1.ax1x.com/2020/03/26/GpwZo6.png)
 
     3.5 Search device `XC7A200TFBG484-2L` in `Part` menu
-        ![step3.5](imgchr.com/i/GpwFy9)
+        ![step3.5](https://s1.ax1x.com/2020/03/26/GpwFy9.png)
 
     3.6 Finish create and the guide should be like
-        ![step3.6](imgchr.com/i/GpwiQJ)
+        ![step3.6](https://s1.ax1x.com/2020/03/26/GpwiQJ.png)
 
     3.7 After vivado has created the project, as we could see, there might be 4 syntax error files, which is due to wrong file type. Hence we should correct it manually by right click every error file and choose `source file property` and change it property into `verilog header` as following.
-        ![step3.7](imgchr.com/i/GpwwlQ)
+        ![step3.7](https://s1.ax1x.com/2020/03/26/GpwwlQ.png)
 
     3.8 As we add our sources by adding directory, we actually added a redandent source file. We need to remove file `wujian100_open_top.v`.
 
     3.9 After removing the file, we could set the top file `wujian100_open_fpga_top.v` to be the first to compile.
-        ![step3.9](imgchr.com/i/Gpw8eI)
+        ![step3.9](https://s1.ax1x.com/2020/03/26/Gpw8eI.png)
 
     * TWO important STEP
 
@@ -116,7 +116,7 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
     set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A75/A18597_reg}]
     ```
 
-    ![step3.10](imgchr.com/i/GpwtFf)
+    ![step3.10](https://s1.ax1x.com/2020/03/26/GpwtFf.png)
     3.11 change one name from `get_nets PAD_JTAG_TCLK_c` into `get_nets PAD_JTAG_TCLK`. i.e.,
 
     ```xdc
