@@ -1,8 +1,8 @@
 # Site settings
 title: Jiayi's Blog
 SEOTitle: 加一的博客
-header-img: img/post-bg-desk.jpg
-email: lijiayi19971126@hotmail.com
+header-img: img/ying.jpg
+email: lijiayi19971127@hotmail.com
 description: "Always"
 keyword: "加一的博客, FPGA, STM32"
 url: "http://SHIELDJY.github.io"          # your host, for absolute URL
@@ -96,12 +96,9 @@ service-worker: true
 # Friends
 friends: [
     {
-        title: "WY",
-        href: "http://zhengwuyang.com"
-    },{
-        title: "简书·BY",
-        href: "http://www.jianshu.com/u/e71990ada2fd"
-    },{
+        title: "yuxi",
+        href: "http://yuxiiii.github.io"
+    },,{
         title: "Apple",
         href: "https://apple.com"
     },{
