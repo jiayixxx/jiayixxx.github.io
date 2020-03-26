@@ -1,0 +1,130 @@
+I"n"<h2 id="something-to-say">Something to say</h2>
+
+<p>Recently I participate a contest named Integrate Circuit Innovation Contest which requires me to use WJ100 developed by Ali Inc. team Pinhead and a FPGA develop board with Xlinx XC7A200TR3B Core. It’s not my first time to cope with FPGA but still, I find it difficult to interpret Verilog Code and make the FPGA works. Luckily, with the help of WJ100 Sdk and CDK(C-sky Develop Kit) which developed by Ali Inc. we could jump the Verilog and long waiting synthesizing part directly to use the pre-setted circuit and easy writing C to develop.</p>
+
+<hr />
+
+<h2 id="about-wj100">About WJ100</h2>
+
+<blockquote>
+  <p>T-Head’s Wujian SoC Platform utilizes the cloud-terminal-integration design philosophy that fuses software and hardware. Full stack integration of chips, operating systems and algorithms enables customers to develop chip products that can be mass-production.</p>
+
+  <p>Low power consumption: User-defined power consumption scenarios, with standby power consumption of less than 1uA, and operating power consumption of less than 100uA/MHz</p>
+</blockquote>
+
+<p>According to the official sites of Pinhead Inc., WJ100 is a low cost and high power efficiency SoC, which barely means that it could be easily deployed on any chips and consumes lower power.</p>
+
+<p>However, as I talked before, it is a open source project and as I believed, the real function of this SoC is to simplify the use of FPGA and to offer the developer a brand new way to develop: integrate Soc and FPGA to deal with some projects which require both power efficiency and fast steady frequency.</p>
+
+<p><em>related websites</em> <a href="https://www.t-head.cn/">pinhead</a></p>
+
+<hr />
+
+<h2 id="how-to-use-wj100-soc">How to use WJ100 SoC</h2>
+
+<p>This tutorial is for those who utilize vivado to generate bitstream file and CDK to develop your own projects with <em>Windows</em>.</p>
+
+<h3 id="part-1-bitstream-generation">Part 1 Bitstream Generation</h3>
+
+<ol>
+  <li>
+    <p>clone <a href="https://github.com/SHIELDJY/wujian100_open">wujian100_open</a> project into your computer with git bash or github. Or just download and unzip it.</p>
+  </li>
+  <li>
+    <p>As demonstrated by <a href="https://github.com/T-head-Semi/wujian100_open">readme.md</a> in wujian100_open repo, the structure of this repo is as follwing</p>
+
+    <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Directory Structure
+ |--Project                //open source project work directory  
+ |--riscv_toolchain      //tool chain install directory download from t-head.cn
+ |--wujian100_open       //wujian100_open project get from github
+     |--case               //test case example for simulation
+     |--doc                //wujian100_open user guide
+     |--fpga               //FPGA script
+     |--lib                //compile script for simulation
+     |--regress            //regression result
+     |--sdk                //software design kit
+     |--soc                //Soc RTL source code
+     |--tb                 //test bench
+     |--tools              //simulation script and setup file
+     |--workdir            //simulation directory
+     |--LICENSE
+     |--README.md
+</code></pre></div>    </div>
+
+    <p>according to this structure what we need for bitstram generation is in <code class="highlighter-rouge">soc</code> and <code class="highlighter-rouge">fpga</code> folder.</p>
+
+    <ul>
+      <li>THE FOLLOWING PARTS 3. – ARE INDIRECTLY INTERPRETED FROM <a href="https://occ.t-head.cn/community/article_detail?id=654091577878118400">wujian100_open的FPGA实现——如何用vivado生成wujian100_open的比特流文件</a> CHINESE DEVELOPER COULD DIRECTLY LOOK UP IN THIS PAGE. THANK Lianglonghui FOR HIS SHARING</li>
+    </ul>
+  </li>
+  <li>
+    <p>Prep your Vivado, I use vivado 2018.3, but as I believe the newer or older versions could also work, the demonstration all runs in vivado 2018.3 HLX Edition and windows 10.</p>
+
+    <p>3.1 Open your vivado and create a new RTL project.
+     <img src="https://imgchr.com/i/GpwkLR" alt="step3.1" /></p>
+
+    <p>3.2 Add source directory <code class="highlighter-rouge">./wujian100_open/soc</code> and <code class="highlighter-rouge">wujian100_open_fpga_top.v</code> in directory <code class="highlighter-rouge">./wujian100_open/fpga</code>.</p>
+
+    <p>3.3 Check <code class="highlighter-rouge">Scan and add RTL files into project</code>, <code class="highlighter-rouge">copy source into project</code> and <code class="highlighter-rouge">add sources from subdirectory</code>.
+     <img src="https://imgchr.com/i/GpwmFK" alt="step3.2" /></p>
+
+    <p>3.4 Add constrain file <code class="highlighter-rouge">XC7A200T3B</code> in directory <code class="highlighter-rouge">./wujian100_open/fpga/xdc</code> and check <code class="highlighter-rouge">copy constrain into project</code>
+     <img src="https://imgchr.com/i/GpwZo6" alt="step3.4" /></p>
+
+    <p>3.5 Search device <code class="highlighter-rouge">XC7A200TFBG484-2L</code> in <code class="highlighter-rouge">Part</code> menu
+     <img src="https://imgchr.com/i/GpwFy9" alt="step3.5" /></p>
+
+    <p>3.6 Finish create and the guide should be like
+     <img src="https://imgchr.com/i/GpwiQJ" alt="step3.6" /></p>
+
+    <p>3.7 After vivado has created the project, as we could see, there might be 4 syntax error files, which is due to wrong file type. Hence we should correct it manually by right click every error file and choose <code class="highlighter-rouge">source file property</code> and change it property into <code class="highlighter-rouge">verilog header</code> as following.
+     <img src="https://imgchr.com/i/GpwwlQ" alt="step3.7" /></p>
+
+    <p>3.8 As we add our sources by adding directory, we actually added a redandent source file. We need to remove file <code class="highlighter-rouge">wujian100_open_top.v</code>.</p>
+
+    <p>3.9 After removing the file, we could set the top file <code class="highlighter-rouge">wujian100_open_fpga_top.v</code> to be the first to compile.
+     <img src="https://imgchr.com/i/Gpw8eI" alt="step3.9" /></p>
+
+    <ul>
+      <li>TWO important STEP</li>
+    </ul>
+
+    <p>3.10 Since the constrain file did not constrain the clock, we must add following xdc code into the file <code class="highlighter-rouge">XC7A200T3B.xdc</code></p>
+
+    <pre><code class="language-xdc"> create_clock -name {EHS} [get_ports PIN_EHS] -period 50 -waveform {0 25}
+ create_clock  -name {JTAG_CLK} [get_ports PAD_JTAG_TCLK] -period 1000 -waveform {0 500}
+
+ set_clock_groups -asynchronous -name {clkgroup_1} -group [get_clocks {EHS JTAG_CLK}]
+
+ set_false_path -through [get_ports PIN_EHS]
+
+ #set_clock_groups -name {Inferred_clkgroup_0} -asynchronous -group [get_clocks {wujian100_open_top|PAD_JTAG_TCLK}]
+
+ set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/pclk_load_sync2_reg}]
+ set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/rtc_load_sync2_reg}]
+ set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/pclk_load_sync1_reg}]
+ set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/rtc_load_sync1_reg}]
+ set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A74/A10b_reg}]
+ set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A74/A18597_reg}]
+ set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A1862d/A10b_reg}]
+ set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A1862d/A18597_reg}]
+ set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A75/A10b_reg}]
+ set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A75/A18597_reg}]
+</code></pre>
+
+    <p><img src="https://imgchr.com/i/GpwtFf" alt="step3.10" />
+ 3.11 change one name from <code class="highlighter-rouge">get_nets PAD_JTAG_TCLK_c</code> into <code class="highlighter-rouge">get_nets PAD_JTAG_TCLK</code>. i.e.,</p>
+
+    <pre><code class="language-xdc"> # set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets PAD_JTAG_TCLK_c]
+ into
+ set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets PAD_JTAG_TCLK]
+</code></pre>
+
+    <p>3.12 Generate Bitstram and watch two sets of Rick and Morty since it costs me 31 minutes to finish the bitstream writing.</p>
+
+    <p>3.13 Finally we receive the success message. Find your <code class="highlighter-rouge">wujian100_open_top.bit</code> file in directory <code class="highlighter-rouge">./{your_project_name}.runs/impl_1}</code>. And change the file name into cfg.bit.</p>
+
+    <p>3.14 Copy your cfg.bit file into your FPGA. Check if it works.(First time configuration may failed. Just press re-prog one another time)</p>
+  </li>
+</ol>
+:ET
