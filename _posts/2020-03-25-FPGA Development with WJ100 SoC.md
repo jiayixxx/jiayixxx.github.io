@@ -4,7 +4,7 @@ title:      FPGA Development with WJ100 SoC
 subtitle:    "\"Part One: Bitsream Generation\""
 date:       2020-03-25
 author:     Jiayi
-header-img: img/pinhead.png
+header-img: img/20200326/zhixintongde.jpg
 catalog: true
 tags:
     - FPGA WJ100 无剑100 平头哥 Pinhead vivado synthesis bitstream
@@ -65,68 +65,69 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
 
 3. Prep your Vivado, I use vivado 2018.3, but as I believe the newer or older versions could also work, the demonstration all runs in vivado 2018.3 HLX Edition and windows 10.
 
-3.1 Open your vivado and create a new RTL project.
+   1. Open your vivado and create a new RTL project.
         ![step3.1](https://s1.ax1x.com/2020/03/26/GpwkLR.png)
 
-3.2 Add source directory `./wujian100_open/soc` and `wujian100_open_fpga_top.v` in directory `./wujian100_open/fpga`.
+   2. Add source directory `./wujian100_open/soc` and `wujian100_open_fpga_top.v` in directory `./wujian100_open/fpga`.
 
-3.3 Check `Scan and add RTL files into project`, `copy source into project` and `add sources from subdirectory`.
+   3. Check `Scan and add RTL files into project`, `copy source into project` and `add sources from subdirectory`.
         ![step3.2](https://s1.ax1x.com/2020/03/26/GpwmFK.png)
 
-3.4 Add constrain file `XC7A200T3B` in directory `./wujian100_open/fpga/xdc` and check `copy constrain into project`
+   4. Add constrain file `XC7A200T3B` in directory `./wujian100_open/fpga/xdc` and check `copy constrain into project`
         ![step3.4](https://s1.ax1x.com/2020/03/26/GpwZo6.png)
 
-3.5 Search device `XC7A200TFBG484-2L` in `Part` menu
+   5. Search device `XC7A200TFBG484-2L` in `Part` menu
         ![step3.5](https://s1.ax1x.com/2020/03/26/GpwFy9.png)
 
-3.6 Finish create and the guide should be like
+   6. Finish create and the guide should be like
         ![step3.6](https://s1.ax1x.com/2020/03/26/GpwiQJ.png)
 
-3.7 After vivado has created the project, as we could see, there might be 4 syntax error files, which is due to wrong file type. Hence we should correct it manually by right click every error file and choose `source file property` and change it property into `verilog header` as following.
+   7. After vivado has created the project, as we could see, there might be 4 syntax error files, which is due to wrong file type. Hence we should correct it manually by right click every error file and choose `source file property` and change it property into `verilog header` as following.
         ![step3.7](https://s1.ax1x.com/2020/03/26/GpwwlQ.png)
 
-3.8 As we add our sources by adding directory, we actually added a redandent source file. We need to remove file `wujian100_open_top.v`.
+   8. As we add our sources by adding directory, we actually added a redandent source file. We need to remove file `wujian100_open_top.v`.
 
-3.9 After removing the file, we could set the top file `wujian100_open_fpga_top.v` to be the first to compile.
+   9. After removing the file, we could set the top file `wujian100_open_fpga_top.v` to be the first to compile.
         ![step3.9](https://s1.ax1x.com/2020/03/26/Gpw8eI.png)
 
-    * TWO important STEP
+        * TWO important STEP
 
-3.10 Since the constrain file did not constrain the clock, we must add following xdc code into the file `XC7A200T3B.xdc`
+   10. Since the constrain file did not constrain the clock, we must add following xdc code into the file `XC7A200T3B.xdc`
 
-    ```xdc
-    create_clock -name {EHS} [get_ports PIN_EHS] -period 50 -waveform {0 25}
-    create_clock  -name {JTAG_CLK} [get_ports PAD_JTAG_TCLK] -period 1000 -waveform {0 500}
+       ```verilog
+       create_clock -name {EHS} [get_ports PIN_EHS] -period 50 -waveform {0 25}
+       create_clock  -name {JTAG_CLK} [get_ports PAD_JTAG_TCLK] -period 1000 -waveform {0 500}
 
-    set_clock_groups -asynchronous -name {clkgroup_1} -group [get_clocks {EHS JTAG_CLK}]
+       set_clock_groups -asynchronous -name {clkgroup_1} -group [get_clocks {EHS JTAG_CLK}]
 
-    set_false_path -through [get_ports PIN_EHS]
+       set_false_path -through [get_ports PIN_EHS]
 
-    #set_clock_groups -name {Inferred_clkgroup_0} -asynchronous -group [get_clocks {wujian100_open_top|PAD_JTAG_TCLK}]
+       #set_clock_groups -name {Inferred_clkgroup_0} -asynchronous -group [get_clocks {wujian100_open_top|PAD_JTAG_TCLK}]
 
-    set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/pclk_load_sync2_reg}]
-    set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/rtc_load_sync2_reg}]
-    set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/pclk_load_sync1_reg}]
-    set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/rtc_load_sync1_reg}]
-    set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A74/A10b_reg}]
-    set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A74/A18597_reg}]
-    set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A1862d/A10b_reg}]
-    set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A1862d/A18597_reg}]
-    set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A75/A10b_reg}]
-    set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A75/A18597_reg}]
-    ```
+       set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/pclk_load_sync2_reg}]
+       set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/rtc_load_sync2_reg}]
+       set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/pclk_load_sync1_reg}]
+       set_property ASYNC_REG TRUE [get_cells {x_aou_top/x_rtc0_sec_top/x_rtc_pdu_top/x_rtc_clr_sync/rtc_load_sync1_reg}]
+       set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A74/A10b_reg}]
+       set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A74/A18597_reg}]
+       set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A1862d/A10b_reg}]
+       set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A1862d/A18597_reg}]
+       set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A75/A10b_reg}]
+       set_property ASYNC_REG TRUE [get_cells {x_cpu_top/CPU/x_cr_had_top/A15d/A75/A18597_reg}]
+       ```
 
-    ![step3.10](https://s1.ax1x.com/2020/03/26/GpwtFf.png)
-3.11 change one name from `get_nets PAD_JTAG_TCLK_c` into `get_nets PAD_JTAG_TCLK`. i.e.,
+       ![step3.10](https://s1.ax1x.com/2020/03/26/GpwtFf.png)
 
-```xdc
-# set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets PAD_JTAG_TCLK_c]
-into
-set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets PAD_JTAG_TCLK]
-```
+   11. change one name from `get_nets PAD_JTAG_TCLK_c` into `get_nets PAD_JTAG_TCLK`. i.e.,
 
-3.12 Generate Bitstram and watch two sets of Rick and Morty since it costs me 31 minutes to finish the bitstream writing.
+      ```verilog
+      # set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets PAD_JTAG_TCLK_c]
+      into
+      set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets PAD_JTAG_TCLK]
+      ```
 
-3.13 Finally we receive the success message. Find your `wujian100_open_top.bit` file in directory `./{your_project_name}.runs/impl_1}`. And change the file name into cfg.bit.
+   12. Generate Bitstram and watch two sets of Rick and Morty since it costs me 31 minutes to finish the bitstream writing.
 
-3.14 Copy your cfg.bit file into your FPGA. Check if it works.(First time configuration may failed. Just press re-prog one another time)
+   13. Finally we receive the success message. Find your `wujian100_open_top.bit` file in directory `./{your_project_name}.runs/impl_1}`. And change the file name into cfg.bit.
+
+   14. Copy your cfg.bit file into your FPGA. Check if it works.(First time configuration may failed. Just press re-prog one another time)
