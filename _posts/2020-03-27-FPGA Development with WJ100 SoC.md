@@ -339,7 +339,7 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
             syslog.c
    ```
 
-8. projects
+8. `projects`
 
    ```tree
    projects
@@ -386,7 +386,7 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
         └─driver
    ```
 
-9. `utilities
+9. `utilities`
 
    ```text
    utilities
@@ -394,4 +394,3 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
        flash.init
        gdb.init
    ```
-
