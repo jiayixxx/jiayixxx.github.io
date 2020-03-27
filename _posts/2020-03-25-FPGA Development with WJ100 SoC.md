@@ -26,7 +26,7 @@ According to the official sites of Pinhead Inc., WJ100 is a low cost and high po
 
 However, as I talked before, it is a open source project and as I believed, the real function of this SoC is to simplify the use of FPGA and to offer the developer a brand new way to develop: integrate Soc and FPGA to deal with some projects which require both power efficiency and fast steady frequency.
 
-*related websites* [pinhead](https://www.t-head.cn/)
+*related websites*  [pinhead](https://www.t-head.cn/)
 
 ---
 
