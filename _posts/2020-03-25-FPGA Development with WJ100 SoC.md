@@ -9,6 +9,9 @@ catalog: true
 tags:
     - FPGA WJ100 无剑100 平头哥 Pinhead vivado synthesis bitstream
 ---
+## FPGA Development with WJ100 SoC
+
+### Part One: Bitsream Generation
 
 ## Something to say
 
