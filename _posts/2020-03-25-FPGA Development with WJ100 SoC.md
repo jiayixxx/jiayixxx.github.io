@@ -1,17 +1,26 @@
 ---
 layout:     post
-title:      FPGA Development with WJ100 SoC
+title:      FPGA Development with wujian100 SoC
 subtitle:    "\"Part One: Bitsream Generation\""
 date:       2020-03-25
 author:     Jiayi
 header-img: img/20200326/zhixintongde.jpg
 catalog: true
 tags:
-    - FPGA WJ100 无剑100 平头哥 Pinhead vivado synthesis bitstream
+    - FPGA
+    - wujian100
+    - 无剑100
+    - 平头哥
+    - Pinhead
+    - vivado
+    - synthesis
+    - bitstream
 ---
-## FPGA Development with WJ100 SoC
+## FPGA Development with wujian100 SoC
 
 ### Part One: Bitsream Generation
+
+Author: 加一(Jiayi)
 
 ## Something to say
 

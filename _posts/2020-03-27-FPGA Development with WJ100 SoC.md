@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      FPGA Development with WJ100 SoC
+title:      FPGA Development with wujian100 SoC
 subtitle:    "\"Part Two: CDK Develop\""
 date:       2020-03-27
 author:     Jiayi
@@ -8,16 +8,18 @@ header-img: img/20200326/zhixintongde.jpg
 catalog: true
 tags:
     - FPGA
-    - WJ100
+    - wujian100
     - 无剑100
     - 平头哥
     - Pinhead
     - C-Sky Devolopment Kit(CDK)
 ---
 
-## FPGA Development with WJ100 SoC
+## FPGA Development with wujian100 SoC
 
 ### Part Two: CDK Develop
+
+Author: 加一(Jiayi)
 
 ## Something to say
 
@@ -76,15 +78,15 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
 3. `board`
 
    ```text
-      ├─board
-   │  └─wujian100_open_evb
-   │      │  board_init.c
-   │      │  gcc_csky.ld
-   │      │
-   │      └─include
-   │              pin.h
-   │              test_driver_config.h
-   │              test_kernel_config.h
+   board
+    └─wujian100_open_evb
+        │  board_init.c
+        │  gcc_csky.ld
+        │
+        └─include
+                pin.h
+                test_driver_config.h
+                test_kernel_config.h
    ```
 
    board folder contains hardware initialize files.
@@ -97,11 +99,11 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
 4. `csi_core`
 
    ```text
-   ├─csi_core
-   │  └─include
-   │          core_rv32.h
-   │          csi_core.h
-   │          csi_rv32_gcc.h
+   csi_core
+    └─include
+            core_rv32.h
+            csi_core.h
+            csi_rv32_gcc.h
    ```
 
 5. `csi_driver`
