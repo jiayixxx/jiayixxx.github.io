@@ -11,7 +11,7 @@ tags:
     - wujian100
     - 无剑100
     - 平头哥
-    - Pinhead
+    - t-head
     - vivado
     - synthesis
     - bitstream
@@ -24,7 +24,7 @@ Author: 加一(Jiayi)
 
 ## Something to say
 
-Recently I participate a contest named Integrate Circuit Innovation Contest which requires me to use WJ100 developed by Ali Inc. team Pinhead and a FPGA develop board with Xlinx XC7A200TR3B Core. It's not my first time to cope with FPGA but still, I find it difficult to interpret Verilog Code and make the FPGA works. Luckily, with the help of WJ100 Sdk and CDK(C-sky Develop Kit) which developed by Ali Inc. we could jump the Verilog and long waiting synthesizing part directly to use the pre-setted circuit and easy writing C to develop.
+Recently I participate a contest named Integrate Circuit Innovation Contest which requires me to use WJ100 developed by Ali Inc. team t-head and a FPGA develop board with Xlinx XC7A200TR3B Core. It's not my first time to cope with FPGA but still, I find it difficult to interpret Verilog Code and make the FPGA works. Luckily, with the help of WJ100 Sdk and CDK(C-sky Develop Kit) which developed by Ali Inc. we could jump the Verilog and long waiting synthesizing part directly to use the pre-setted circuit and easy writing C to develop.
 
 ---
 
@@ -38,7 +38,8 @@ According to the official sites of Pinhead Inc., WJ100 is a low cost and high po
 
 However, as I talked before, it is a open source project and as I believed, the real function of this SoC is to simplify the use of FPGA and to offer the developer a brand new way to develop: integrate Soc and FPGA to deal with some projects which require both power efficiency and fast steady frequency.
 
-*related websites*  [pinhead](https://www.t-head.cn/)
+* related websites
+[t-head](https://www.t-head.cn/)
 
 ---
 
