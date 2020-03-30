@@ -53,5 +53,80 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
 1. Open your CDK desktop.
 
 2. Before create a new projeck, we need to create a new workspace for it. Click `create a new multi-project workspace` and choose your name and path. Finish the create of project.
+    [step2](www..com)
 
 3. After we have successfully created the workspace, we could now create a new project. Find `Project` on your toolbar and choose `new project` and there will be a *new project* window.
+
+4. Since CDK doesn't offer an template for wujian100, we must choose a core similar to wujian100 SoC. So let us choose `Smartl_E902-BareMetal` under `ERISC Series`. However, as I believe, whatever you choose are both alright because we are going to delete all the files and change almost every configuration later.
+    [step4](www..com)
+
+5. Remove every folder in the project you just created. Both in the workspace and in the folder. Be careful because you need to restore `main` folder and `{yourprojectname}.cdkprj`
+    [step5](www..com)
+
+6. Go to `wujian100_open` repo path and open `sdk`, copy following folders to ./{yourcdkprojectname}: `board`, `csi_core`, `csi_driver`, `csi_kernel`, `libs`, `utilities`.
+    [step6.1](www..com)
+    Open `projects-examples-hello_world` and copy `config` folder to ./{yourcdkprojectname}, just like:
+    [step6.2](www..com)
+
+7. Right click `{yourprojectname}` in the left side bar or wherever called `project view` window and choose `add source folder` option.
+    [step7](www..com)
+
+8. Add folders just moved to your project folder *one by one* and click `NO` for "copy source folder to current project path".
+
+9. Finally you should see the project view like this with 8 folders and all its contents are inside.
+    [step9](www..com)
+
+10. Open `project` menu on the toolbar and select `open active project settings`.
+    [step10](www..com)
+
+11. In `target` label under `target info` we could write our description about wujian100, i.e.
+
+    ```text
+    Core: wujian100 SoC
+    Board: Xilinx XC7A200TR3B
+    ```
+
+12. In `Compiler` label we need to modify include path, delete several include path related to the original template. The include path should be like the following.
+
+    ```path
+    $(ProjectPath)
+    $(ProjectPath)//configs
+    $(ProjectPath)/board/wujian100_open_evb/include
+    $(ProjectPath)/csi_core/include
+    $(ProjectPath)/csi_driver/include
+    $(ProjectPath)/csi_driver/wujian100_open/include
+    $(ProjectPath)/csi_kernel/include
+    $(ProjectPath)/csi_kernel/rhino/arch/include
+    $(ProjectPath)/csi_kernel/rhino/common
+    $(ProjectPath)/csi_kernel/rhino/core/include
+    $(ProjectPath)/csi_kernel/rhino/driver
+    $(ProjectPath)/csi_kernel/rhino/pwrmgmt
+    $(ProjectPath)/include
+    $(ProjectPath)/libs/include
+    $(ProjectPath)/libs/include/ringbuffer
+    $(ProjectPath)/libs/include/sys
+    ```
+
+13. In `Assembler` label we need also change the include path to be like following.
+
+    ```path
+    $(ProjectPath)
+    $(ProjectPath)//configs
+    ```
+
+14. In `Linker` label under `link file` dock, we `must` change that into our gcc_csky.ld file.
+
+    ```path
+    $(ProjectPath)/board/wujian100_open_evb/gcc_csky.ld
+    ```
+
+15. In `User` laber under `Run user programm AFTER build/rebuild` dock, we need to change that into our after_bd.sh
+
+    ```path
+    $(ProjectPath)/utilities/aft_build.sh
+    ```
+
+16. Click `OK` to end the configuration.
+
+17. Build the project and finally we could see the `Done` message.
+    [step17]
