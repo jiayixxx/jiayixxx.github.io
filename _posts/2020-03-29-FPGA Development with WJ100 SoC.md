@@ -42,11 +42,6 @@ However, as I talked before, it is a open source project and as I believed, the 
 
 ### How to use WJ100 SoC
 
-![GK9FxI.png](https://s1.ax1x.com/2020/03/31/GK9FxI.png)
-![GK9eZ8.png](https://s1.ax1x.com/2020/03/31/GK9eZ8.png)
-![GK9mdS.png](https://s1.ax1x.com/2020/03/31/GK9mdS.png)
-![GK9nIg.png](https://s1.ax1x.com/2020/03/31/GK9nIg.png)
-![GK9KiQ.png](https://s1.ax1x.com/2020/03/31/GK9KiQ.png)
 This tutorial is for those who utilize vivado to generate bitstream file and CDK to develop your own projects with *Windows*.
 
 * For Part 1 Bitsream Generation please refer to [Part_1_Bitstream_Generation](https://shieldjy.github.io/2020/03/25/FPGA-Development-with-WJ100-SoC/).
