@@ -11,7 +11,8 @@ github_repo: "https://github.com/SHIELDJY/SHIELDJY.github.io.git" # you code rep
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "Goals determine what you going to be!"
+sidebar-about-description: "A pessimist sees the difficulty in every opportunity; an optimist
+sees the opportunity in every difficulty."
 sidebar-avatar: /img/lijiayi_pic.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
