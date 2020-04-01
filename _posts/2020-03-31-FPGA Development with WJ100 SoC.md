@@ -52,4 +52,84 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
 
 ### Part 4 Hello World
 
-After all that sruggles before, now we could finally write our programs by using CDK which is relatively simple if you have some background knowledge about working on Microprocessor, say STM32, Arduino or so.
+After all that sruggles before, now we could finally write our programs by using CDK which is relatively simple if you have some background knowledge about working on Microprocessor, say STM32, Arduino or so. Let us strat with s simple Hello World project.
+
+1. Open the cdk project we just built in Part 3. And open `main.c` Under folder main.
+
+2. Since it is an exclusively simple file, I would skip to expain what's what. However, you may have some probelm why `printf` function could make an output and where does this string goes to.
+
+    ```C++
+    /******************************************************************************
+    * @file     main.c
+    * @brief    hello world
+    * @version  V1.0
+    * @date     17. Jan 2018
+    ******************************************************************************/
+
+    #include <stdio.h>
+
+    int main(void)
+    {
+        printf("Hello World!\n");
+
+        return 0;
+    }
+    ```
+
+3. To reveal where printf function remaps, open `board_init.c` under path `./board/wujian100_open_evb` as we could see below.
+
+    ```C++
+    void board_init(void)
+    {
+        int32_t ret = 0;
+        /* init the console*/
+        clock_timer_init();
+        clock_timer_start();
+
+        console_handle = csi_usart_initialize(CONSOLE_IDX, NULL);
+        /* config the UART */
+        ret = csi_usart_config(console_handle, 115200, USART_MODE_ASYNCHRONOUS, USART_PARITY_NONE, USART_STOP_BITS_1, USART_DATA_BITS_8);
+
+        if (ret < 0) {
+            return;
+        }
+    }
+    ```
+
+    usart is initiallized. And also, timer is initialized to make `delay` functionale.
+
+4. To dig deeper, right click variable `console_handle` and goto implementation. We could find this variable is defined in `minilibc_port.c` which gives a mapping function from usart to `fputc` and `fgetc` which make it easier to programm.
+
+    ```C++
+    int fputc(int ch, FILE *stream)
+    {
+        (void)stream;
+
+        if (console_handle == NULL) {
+            return -1;
+        }
+
+        if (ch == '\n') {
+            csi_usart_putchar(console_handle, '\r');
+        }
+
+        csi_usart_putchar(console_handle, ch);
+
+        return 0;
+    }
+
+    int fgetc(FILE *stream)
+    {
+        uint8_t ch;
+        (void)stream;
+
+        if (console_handle == NULL) {
+            return -1;
+        }
+
+        csi_usart_getchar(console_handle, &ch);
+
+        return ch;
+    }
+
+    ```
