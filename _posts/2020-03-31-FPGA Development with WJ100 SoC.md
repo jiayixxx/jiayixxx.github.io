@@ -54,9 +54,13 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
 
 After all that sruggles before, now we could finally write our programs by using CDK which is relatively simple if you have some background knowledge about working on Microprocessor, say STM32, Arduino or so. Let us strat with s simple Hello World project.
 
-1. Open the cdk project we just built in Part 3. And open `main.c` Under folder main.
+#### 1 Open project
 
-2. Since it is an exclusively simple file, I would skip to expain what's what. However, you may have some probelm why `printf` function could make an output and where does this string goes to.
+    Open the cdk project we just built in Part 3. And open `main.c` Under folder main.
+
+#### 2 Main function
+
+    Since it is an exclusively simple file, I would skip to expain what's what. However, you may have some probelm why `printf` function could make an output and where does this string goes to.
 
     ```C++
     /******************************************************************************
@@ -76,7 +80,9 @@ After all that sruggles before, now we could finally write our programs by using
     }
     ```
 
-3. To reveal where printf function remaps, open `board_init.c` under path `./board/wujian100_open_evb` as we could see below.
+#### 3 Why this simple
+
+    To reveal where printf function remaps, open `board_init.c` under path `./board/wujian100_open_evb` as we could see below.
 
     ```C++
     void board_init(void)
@@ -98,7 +104,9 @@ After all that sruggles before, now we could finally write our programs by using
 
     usart is initiallized. And also, timer is initialized to make `delay` functionale.
 
-4. To dig deeper, right click variable `console_handle` and goto implementation. We could find this variable is defined in `minilibc_port.c` which gives a mapping function from usart to `fputc` and `fgetc` which make it easier to programm.
+#### 4 Let us dig deeper
+
+    To dig deeper, right click variable `console_handle` and goto implementation. We could find this variable is defined in `minilibc_port.c` which gives a mapping function from usart to `fputc` and `fgetc` which make it easier to programm
 
     ```C++
     int fputc(int ch, FILE *stream)
@@ -133,3 +141,28 @@ After all that sruggles before, now we could finally write our programs by using
     }
 
     ```
+
+#### 5 How to run this project
+
+    1. Open CDK project as direction above and make sure to open `serial panel` to receive message.
+        ![step5.1](https://s1.ax1x.com/2020/04/06/Gyji7t.png)
+    2. Right click on serial panel and choose `settings`.
+        ![step5.2](https://s1.ax1x.com/2020/04/06/GyjEh8.png)
+    3. Since the UART has been configured as in the functions demonstrated in `3` which is
+
+    ```C++
+    Baud rate: 115200 //Baud rate with 115200
+    Mode: USART_MODE_ASYNCHRONOUS //mode asychronous
+    Parity: USART_PARITY_NONE //not using parity flag
+    Stop bits: USART_STOP_BITS_1 //1 stop bits
+    Data bits: USART_DATA_BITS_8 //8 data bits
+    ```
+
+    Hence we must configure the serial panel with same configuration. And do not forget to check which com port your device uses, or you could test one by one.
+        ![step5.3](https://s1.ax1x.com/2020/04/06/GyjCnA.png)
+    
+    4. Click `ok` and you should have successfully finished your serial configuration. And your serial panel should be like
+        ![step5.4](https://s1.ax1x.com/2020/04/06/GyjkAP.png)
+    
+    5. Run the project with the debugger and start debug. And as you could see below, success!
+        ![step5.5](https://s1.ax1x.com/2020/04/06/GyjP0I.png)
