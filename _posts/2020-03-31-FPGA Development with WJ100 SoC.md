@@ -144,25 +144,25 @@ After all that sruggles before, now we could finally write our programs by using
 
 #### 5 How to run this project
 
-    1. Open CDK project as direction above and make sure to open `serial panel` to receive message.
+1. Open CDK project as direction above and make sure to open `serial panel` to receive message.
         ![step5.1](https://s1.ax1x.com/2020/04/06/Gyji7t.png)
-    2. Right click on serial panel and choose `settings`.
+2. Right click on serial panel and choose `settings`.
         ![step5.2](https://s1.ax1x.com/2020/04/06/GyjEh8.png)
-    3. Since the UART has been configured as in the functions demonstrated in `3` which is
+3. Since the UART has been configured as in the functions demonstrated in `3` which is
 
-    ```C++
-    Baud rate: 115200 //Baud rate with 115200
-    Mode: USART_MODE_ASYNCHRONOUS //mode asychronous
-    Parity: USART_PARITY_NONE //not using parity flag
-    Stop bits: USART_STOP_BITS_1 //1 stop bits
-    Data bits: USART_DATA_BITS_8 //8 data bits
-    ```
+        ```C++
+        Baud rate: 115200 //Baud rate with 115200
+        Mode: USART_MODE_ASYNCHRONOUS //mode asychronous
+        Parity: USART_PARITY_NONE //not using parity flag
+        Stop bits: USART_STOP_BITS_1 //1 stop bits
+        Data bits: USART_DATA_BITS_8 //8 data bits
+        ```
 
     Hence we must configure the serial panel with same configuration. And do not forget to check which com port your device uses, or you could test one by one.
         ![step5.3](https://s1.ax1x.com/2020/04/06/GyjCnA.png)
-    
-    4. Click `ok` and you should have successfully finished your serial configuration. And your serial panel should be like
+
+4. Click `ok` and you should have successfully finished your serial configuration. And your serial panel should be like
         ![step5.4](https://s1.ax1x.com/2020/04/06/GyjkAP.png)
-    
-    5. Run the project with the debugger and start debug. And as you could see below, success!
+
+5. Run the project with the debugger and start debug. And as you could see below, success!
         ![step5.5](https://s1.ax1x.com/2020/04/06/GyjP0I.png)
