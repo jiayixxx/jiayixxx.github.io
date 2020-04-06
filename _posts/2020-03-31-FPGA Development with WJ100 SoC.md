@@ -67,14 +67,14 @@ After all that sruggles before, now we could finally write our programs by using
     * @file     main.c
     * @brief    hello world
     * @version  V1.0
-    * @date     17. Jan 2018
+    * @date     31. Mar. 2020
     ******************************************************************************/
 
     #include <stdio.h>
 
     int main(void)
     {
-        printf("Hello World!\n");
+        printf("Hello World!\n --example by jiayi\n");
 
         return 0;
     }
