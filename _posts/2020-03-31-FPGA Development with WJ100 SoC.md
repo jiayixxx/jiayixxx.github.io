@@ -2,7 +2,7 @@
 layout:     post
 title:      FPGA Development with wujian100 SoC
 subtitle:    "\"Part Four: Hello World\""
-date:       2020-03-29
+date:       2020-03-31
 author:     Jiayi
 header-img: img/20200326/zhixintongde.jpg
 catalog: true
