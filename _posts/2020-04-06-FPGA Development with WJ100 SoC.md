@@ -162,10 +162,14 @@ Now we have reached to the high points of this article, the use of GPIO in wujia
     ```
 
 3. Set GPIO pin mode. There are 5 modes for us to choose.
-Three for input: `GPIO_MODE_PULLNONE`,`GPIO_MODE_PULLUP` and `GPIO_MODE_PULLDOWN`
-Two for output: `GPIO_MODE_OPEN_DRAIN` and `GPIO_MODE_PUSH_PULL`
-For more knowledge about GPIO mode, please refer to [embeddedartistry](https://embeddedartistry.com/blog/2018/06/04/demystifying-microcontroller-gpio-settings/) by *PHILLIP JOHNSTON*.
-In this case we set mode as push pull used for output.
+
+    Three for input: `GPIO_MODE_PULLNONE`,`GPIO_MODE_PULLUP` and `GPIO_MODE_PULLDOWN`
+
+    Two for output: `GPIO_MODE_OPEN_DRAIN` and `GPIO_MODE_PUSH_PULL`
+
+    For more knowledge about GPIO mode, please refer to [embeddedartistry](https://embeddedartistry.com/blog/2018/06/04/demystifying-microcontroller-gpio-settings/) by *PHILLIP JOHNSTON*.
+
+    In this case we set mode as push pull used for output.
 
     ```C++
     csi_gpio_pin_config_mode(pin, GPIO_MODE_PUSH_PULL);
