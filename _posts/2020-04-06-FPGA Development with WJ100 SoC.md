@@ -43,7 +43,7 @@ However, as I talked before, it is a open source project and as I believed, the 
 
 ### How to use WJ100 SoC
 
-This tutorial is for those who utilize vivado to generate bitstream file and CDK to develop your own projects with *Windows*.
+This tutorial is for those who utilize vivado to generate bitstream file and CDK to develop your own projects on *Windows*.
 
 * For Part 1 Bitsream Generation please refer to [Part_1_Bitstream_Generation](https://shieldjy.github.io/2020/03/25/FPGA-Development-with-WJ100-SoC/).
 
@@ -151,6 +151,41 @@ Now we have reached to the high points of this article, the use of GPIO in wujia
 
 1. Unitialize the GPIO in case pre-configuration has been done unpurposely.
 
+    ```C++
+    csi_gpio_pin_uninitialize(gpio_pin_handle_t pin);
+    ```
+
 2. Initialize the GPIO function by port directly since wujian100 official offers only one single port.
 
-3. Set the Mode as Output/Input whatever you would like it to be. In this case, well, we set it as Output since I have nothing to input.
+    ```C++
+    pin = csi_gpio_pin_initialize(gpio_pin, gpio_interrupt_handler);
+    ```
+
+3. Set GPIO pin mode. There are 5 modes for us to choose.
+Three for input: `GPIO_MODE_PULLNONE`,`GPIO_MODE_PULLUP` and `GPIO_MODE_PULLDOWN`
+Two for output: `GPIO_MODE_OPEN_DRAIN` and `GPIO_MODE_PUSH_PULL`
+For more knowledge about GPIO mode, please refer to [embeddedartistry](https://embeddedartistry.com/blog/2018/06/04/demystifying-microcontroller-gpio-settings/) by *PHILLIP JOHNSTON*.
+In this case we set mode as push pull used for output.
+
+    ```C++
+    csi_gpio_pin_config_mode(pin, GPIO_MODE_PUSH_PULL);
+    ```
+
+4. Set the GPIO direction as Output/Input whatever you would like it to be. In this case, well, we set it as Output since I have nothing to input.
+
+    ```C++
+    csi_gpio_pin_config_direction(pin, GPIO_DIRECTION_OUTPUT);
+    ```
+
+5. After configuration, we might need to output value to the port.
+
+    ```C++
+    csi_gpio_pin_write(pin, 1); //write pin with high voltage level
+    csi_gpio_pin_write(pin, 0); //write pin with low voltage level
+    ```
+
+6. If you would like to read from a pin. Be sure to prepare a bool pointer, i.e. `bool *val;` and read from pin using
+
+    ```C++
+    csi_gpio_pin_read(pin, val);
+    ```
