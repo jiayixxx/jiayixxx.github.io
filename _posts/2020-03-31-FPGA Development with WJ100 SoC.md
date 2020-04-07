@@ -56,91 +56,91 @@ After all that sruggles before, now we could finally write our programs by using
 
 #### 1 Open project
 
-    Open the cdk project we just built in Part 3. And open `main.c` Under folder main.
+Open the cdk project we just built in Part 3. And open `main.c` Under folder main.
 
 #### 2 Main function
 
-    Since it is an exclusively simple file, I would skip to expain what's what. However, you may have some probelm why `printf` function could make an output and where does this string goes to.
+Since it is an exclusively simple file, I would skip to expain what's what. However, you may have some probelm why `printf` function could make an output and where does this string goes to.
 
-    ```C++
-    /******************************************************************************
-    * @file     main.c
-    * @brief    hello world
-    * @version  V1.0
-    * @date     31. Mar. 2020
-    ******************************************************************************/
+```C++
+/******************************************************************************
+* @file     main.c
+* @brief    hello world
+* @version  V1.0
+* @date     31. Mar. 2020
+******************************************************************************/
 
-    #include <stdio.h>
+#include <stdio.h>
 
-    int main(void)
-    {
-        printf("Hello World!\n --example by jiayi\n");
+int main(void)
+{
+    printf("Hello World!\n --example by jiayi\n");
 
-        return 0;
-    }
-    ```
+    return 0;
+}
+```
 
 #### 3 Why this simple
 
-    To reveal where printf function remaps, open `board_init.c` under path `./board/wujian100_open_evb` as we could see below.
+To reveal where printf function remaps, open `board_init.c` under path `./board/wujian100_open_evb` as we could see below.
 
-    ```C++
-    void board_init(void)
-    {
-        int32_t ret = 0;
-        /* init the console*/
-        clock_timer_init();
-        clock_timer_start();
+```C++
+void board_init(void)
+{
+    int32_t ret = 0;
+    /* init the console*/
+    clock_timer_init();
+    clock_timer_start();
 
-        console_handle = csi_usart_initialize(CONSOLE_IDX, NULL);
-        /* config the UART */
-        ret = csi_usart_config(console_handle, 115200, USART_MODE_ASYNCHRONOUS, USART_PARITY_NONE, USART_STOP_BITS_1, USART_DATA_BITS_8);
+    console_handle = csi_usart_initialize(CONSOLE_IDX, NULL);
+    /* config the UART */
+    ret = csi_usart_config(console_handle, 115200, USART_MODE_ASYNCHRONOUS, USART_PARITY_NONE, USART_STOP_BITS_1, USART_DATA_BITS_8);
 
-        if (ret < 0) {
-            return;
-        }
+    if (ret < 0) {
+        return;
     }
-    ```
+}
+```
 
-    usart is initiallized. And also, timer is initialized to make `delay` functionale.
+usart is initiallized. And also, timer is initialized to make `delay` functionale.
 
 #### 4 Let us dig deeper
 
-    To dig deeper, right click variable `console_handle` and goto implementation. We could find this variable is defined in `minilibc_port.c` which gives a mapping function from usart to `fputc` and `fgetc` which make it easier to programm
+To dig deeper, right click variable `console_handle` and goto implementation. We could find this variable is defined in `minilibc_port.c` which gives a mapping function from usart to `fputc` and `fgetc` which make it easier to programm
 
-    ```C++
-    int fputc(int ch, FILE *stream)
-    {
-        (void)stream;
+```C++
+int fputc(int ch, FILE *stream)
+{
+    (void)stream;
 
-        if (console_handle == NULL) {
-            return -1;
-        }
-
-        if (ch == '\n') {
-            csi_usart_putchar(console_handle, '\r');
-        }
-
-        csi_usart_putchar(console_handle, ch);
-
-        return 0;
+    if (console_handle == NULL) {
+        return -1;
     }
 
-    int fgetc(FILE *stream)
-    {
-        uint8_t ch;
-        (void)stream;
-
-        if (console_handle == NULL) {
-            return -1;
-        }
-
-        csi_usart_getchar(console_handle, &ch);
-
-        return ch;
+    if (ch == '\n') {
+        csi_usart_putchar(console_handle, '\r');
     }
 
-    ```
+    csi_usart_putchar(console_handle, ch);
+
+    return 0;
+}
+
+int fgetc(FILE *stream)
+{
+    uint8_t ch;
+    (void)stream;
+
+    if (console_handle == NULL) {
+        return -1;
+    }
+
+    csi_usart_getchar(console_handle, &ch);
+
+    return ch;
+}
+
+```
 
 #### 5 How to run this project
 
@@ -150,13 +150,13 @@ After all that sruggles before, now we could finally write our programs by using
         ![step5.2](https://s1.ax1x.com/2020/04/06/GyjEh8.png)
 3. Since the UART has been configured as in the functions demonstrated in `3` which is
 
-        ```C++
-        Baud rate: 115200 //Baud rate with 115200
-        Mode: USART_MODE_ASYNCHRONOUS //mode asychronous
-        Parity: USART_PARITY_NONE //not using parity flag
-        Stop bits: USART_STOP_BITS_1 //1 stop bits
-        Data bits: USART_DATA_BITS_8 //8 data bits
-        ```
+    ```C++
+    Baud rate: 115200 //Baud rate with 115200
+    Mode: USART_MODE_ASYNCHRONOUS //mode asychronous
+    Parity: USART_PARITY_NONE //not using parity flag
+    Stop bits: USART_STOP_BITS_1 //1 stop bits
+    Data bits: USART_DATA_BITS_8 //8 data bits
+    ```
 
     Hence we must configure the serial panel with same configuration. And do not forget to check which com port your device uses, or you could test one by one.
         ![step5.3](https://s1.ax1x.com/2020/04/06/GyjCnA.png)
