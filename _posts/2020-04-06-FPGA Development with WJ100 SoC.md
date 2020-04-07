@@ -53,4 +53,104 @@ This tutorial is for those who utilize vivado to generate bitstream file and CDK
 
 * For Part 4 Hello World please refer to [Part4_Hello_World](https://shieldjy.github.io/2020/03/31/FPGA-Development-with-WJ100-SoC/)
 
-### Part 4 Hello World
+### Part 5 GPIO
+
+#### 1 What is GPIO
+
+> A general-purpose input/output (GPIO) is an uncommitted digital signal pin on an integrated circuit or electronic circuit board whose behavior—including whether it acts as input or output—is controllable by the user at run time.
+*wikipedia*
+
+To be brief, GPIO is what we use to write or read digital High/Low signal to and from.
+
+#### 2 Let us see what we have got in library
+
+Open `drv_gpio.h`, as we could see in the following external functions that we could call. They are expained quite elaborate by t-head Inc..
+
+```C++
+/**
+  \brief       Initialize GPIO handle.
+  \param[in]   gpio_pin    gpio pin idx.
+  \param[in]   cb_event  event callback function \ref gpio_event_cb_t
+  \return      gpio_pin_handle
+*/
+gpio_pin_handle_t csi_gpio_pin_initialize(int32_t gpio_pin, gpio_event_cb_t cb_event);
+
+/**
+  \brief       De-initialize GPIO pin handle.stops operation and releases the software resources used by the handle.
+  \param[in]   handle    gpio pin handle to operate.
+  \return      error code
+*/
+int32_t csi_gpio_pin_uninitialize(gpio_pin_handle_t handle);
+
+/**
+  \brief       control gpio power.
+  \param[in]   handle  gpio handle to operate.
+  \param[in]   state   power state.\ref csi_power_stat_e.
+  \return      error code
+*/
+int32_t csi_gpio_power_control(gpio_pin_handle_t handle, csi_power_stat_e state);
+
+/**
+  \brief       config pin mode
+  \param[in]   pin       gpio pin handle to operate.
+  \param[in]   mode      \ref gpio_mode_e
+  \return      error code
+*/
+int32_t csi_gpio_pin_config_mode(gpio_pin_handle_t handle,
+                                 gpio_mode_e mode);
+
+/**
+  \brief       config pin direction
+  \param[in]   pin       gpio pin handle to operate.
+  \param[in]   dir       \ref gpio_direction_e
+  \return      error code
+*/
+int32_t csi_gpio_pin_config_direction(gpio_pin_handle_t handle,
+                                      gpio_direction_e dir);
+
+/**
+  \brief       config pin
+  \param[in]   pin       gpio pin handle to operate.
+  \param[in]   mode      \ref gpio_mode_e
+  \param[in]   dir       \ref gpio_direction_e
+  \return      error code
+*/
+int32_t csi_gpio_pin_config(gpio_pin_handle_t handle,
+                            gpio_mode_e mode,
+                            gpio_direction_e dir);
+
+/**
+  \brief       Set one or zero to the selected GPIO pin.
+  \param[in]   pin       gpio pin handle to operate.
+  \param[in]   value     value to be set
+  \return      error code
+*/
+int32_t csi_gpio_pin_write(gpio_pin_handle_t handle, bool value);
+
+/**
+  \brief       Get the value of  selected GPIO pin.
+  \param[in]   pin       gpio pin handle to operate.
+  \param[out]  value     buffer to store the pin value
+  \return      error code
+*/
+int32_t csi_gpio_pin_read(gpio_pin_handle_t handle, bool *value);
+
+/**
+  \brief       set GPIO interrupt mode.
+  \param[in]   pin       gpio pin handle to operate.
+  \param[in]   mode      irq mode to be set
+  \param[in]   enable    enable flag
+  \return      error code
+*/
+int32_t csi_gpio_pin_set_irq(gpio_pin_handle_t handle, gpio_irq_mode_e mode, bool enable);
+```
+
+#### 3 How to use these functions
+
+Now we have reached to the high points of this article, the use of GPIO in wujian100 SoC.
+
+1. Unitialize the GPIO in case pre-configuration has been done unpurposely.
+
+2. Initialize the GPIO function by port directly since wujian100 official offers only one single port.
+
+3. Set the Mode as Output/Input whatever you would like it to be. In this case, well, we set it as Output since I have nothing to input.
