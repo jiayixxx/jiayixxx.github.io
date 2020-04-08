@@ -188,8 +188,8 @@ Now we have reached to the high points of this article, the use of GPIO in wujia
     csi_gpio_pin_write(pin, 0); //write pin with low voltage level
     ```
 
-6. If you would like to read from a pin. Be sure to prepare a bool pointer, i.e. `bool *val;` and read from pin using
+6. If you would like to read from a pin. Be sure to prepare a bool buffer, i.e. `bool val;` and read from pin using
 
     ```C++
-    csi_gpio_pin_read(pin, val);
+    csi_gpio_pin_read(pin, &val);
     ```
