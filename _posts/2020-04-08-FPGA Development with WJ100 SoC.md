@@ -2,7 +2,7 @@
 layout:     post
 title:      FPGA Development with wujian100 SoC
 subtitle:    "\"Part Six: UART\""
-date:       2020-04-06
+date:       2020-04-08
 author:     Jiayi
 header-img: img/20200326/zhixintongde.jpg
 catalog: true
@@ -13,7 +13,7 @@ tags:
     - 平头哥
     - t-head
     - C-Sky Devolopment Kit(CDK)
-    - GPIO
+    - UART
 ---
 
 ## FPGA Development with wujian100 SoC
