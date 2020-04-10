@@ -69,7 +69,7 @@ In wujian100 SoC, there are 16 channels/timers which I am not sure about since t
 
 Timer is quite a simple module to use in wujian100 and hence it does not offer us many advanced options. Here is library for timer which could be found in `.\csi_driver\include\drv_timer.h`.
 
-```C++
+{% highlight C++ %}
 /**
   \brief       Initialize TIMER Interface. 1. Initializes the resources needed for the TIMER interface 2.registers event callback function
   \param[in]   idx  timer index
@@ -160,7 +160,7 @@ timer_status_t csi_timer_get_status(timer_handle_t handle);
   \return      error code
 */
 int32_t csi_timer_get_load_value(timer_handle_t handle, uint32_t *value);
-```
+{% endhighlight %}
 
 * Be sure not to use function `csi_timer_suspend` since I found it actually an empty function and could only return error code.
 
