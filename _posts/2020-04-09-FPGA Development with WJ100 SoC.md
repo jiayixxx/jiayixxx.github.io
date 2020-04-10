@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      FPGA Development with wujian100 SoC
-subtitle:    "\"Part SEVEN: GPIO (LED ON and OFF)\""
+subtitle:    "\"Part SEVEN: TIMER\""
 date:       2020-04-09
 author:     Jiayi
 header-img: img/20200326/zhixintongde.jpg
