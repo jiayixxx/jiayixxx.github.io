@@ -1,0 +1,401 @@
+I"�/<h2 id="fpga-development-with-wujian100-soc">FPGA Development with wujian100 SoC</h2>
+
+<h3 id="part-two-cdk-develop">Part Two: CDK Develop</h3>
+
+<p>Author: 加一(Jiayi)</p>
+
+<h2 id="something-to-say">Something to say</h2>
+
+<p>Recently I participate a contest named Integrate Circuit Innovation Contest which requires me to use WJ100 developed by Ali Inc. team t-head and a FPGA develop board with Xlinx XC7A200TR3B Core. It’s not my first time to cope with FPGA but still, I find it difficult to interpret Verilog Code and make the FPGA works. Luckily, with the help of WJ100 Sdk and CDK(C-sky Develop Kit) which developed by Ali Inc. we could jump the Verilog and long waiting synthesizing part directly to use the pre-setted circuit and easy writing C to develop.</p>
+
+<hr />
+
+<h2 id="about-wj100">About WJ100</h2>
+
+<blockquote>
+  <p>T-Head’s Wujian SoC Platform utilizes the cloud-terminal-integration design philosophy that fuses software and hardware. Full stack integration of chips, operating systems and algorithms enables customers to develop chip products that can be mass-production.</p>
+
+  <p>Low power consumption: User-defined power consumption scenarios, with standby power consumption of less than 1uA, and operating power consumption of less than 100uA/MHz</p>
+</blockquote>
+
+<p>According to the official sites of t-head Inc., WJ100 is a low cost and high power efficiency SoC, which barely means that it could be easily deployed on any chips and consumes lower power.</p>
+
+<p>However, as I talked before, it is a open source project and as I believed, the real function of this SoC is to simplify the use of FPGA and to offer the developer a brand new way to develop: integrate Soc and FPGA to deal with some projects which require both power efficiency and fast steady frequency.</p>
+
+<ul>
+  <li>related websites
+<a href="https://www.t-head.cn/">t-head</a></li>
+</ul>
+
+<h3 id="how-to-use-wj100-soc">How to use WJ100 SoC</h3>
+
+<p>This tutorial is for those who utilize vivado to generate bitstream file and CDK to develop your own projects with <em>Windows</em>.</p>
+
+<ul>
+  <li>For Part 1 please refer to <a href="https://shieldjy.github.io/2020/03/25/FPGA-Development-with-WJ100-SoC/">Part_1_Bitstream_Generation</a>.</li>
+</ul>
+
+<h3 id="part-2-cdk-develop-on-windows">Part 2 CDK Develop on Windows</h3>
+
+<h4 id="1-software-and-environment-installation">1. Software and Environment Installation</h4>
+
+<ol>
+  <li>
+    <p>Prep your CDK desktop which is offered on <a href="https://occ.t-head.cn/community/download_detail?spm=a2oza.cdk.0.0.413b180fZDUK32&amp;id=575997419775328256">occ-thead</a> and you could download it directly by click <a href="https://cop-image-prod.oss-cn-hangzhou.aliyuncs.com/resource/420262990181302272/1578468253961/cdk-windows-V2.0.4-20200106-2123.zip">CDK_V2.0.4</a>. Its related toolchain which is offered on <a href="https://www.t-head.cn/product/mcu-platform?spm=a2ouz.12987056.0.0.237b6245GFiJjF&amp;lang=zh">t-head</a>  could be download directly by click <a href="https://www.t-head.cn/file/download?spm=a2ouz.12987056.0.0.237b48abyyRABY&amp;file=1571624106073/T-Head%20Tools%20package.zip">CDK_related_Software</a>.</p>
+  </li>
+  <li>
+    <p>Install CDK V2.0.4 which is in <code class="highlighter-rouge">cdk-windows-V2.0.4-20200106-2123.zip</code> on your desktop.</p>
+  </li>
+  <li>
+    <p>Install T-Head DebugServer-V5.8.6 which is offered in <code class="highlighter-rouge">T-head Tools package.zip</code>.</p>
+  </li>
+</ol>
+
+<h4 id="2-about-wujian100-sdk">2. About wujian100 sdk</h4>
+
+<ul>
+  <li>THIS PART IS INDIRECTLY TRANSLATED FROM <em>wujian100 sdk 解读</em></li>
+</ul>
+
+<ol>
+  <li>
+    <p>So far we have successfully install all the software we need to program on your wujian100 SoC. Next let us see what we have got in repo <code class="highlighter-rouge">wujian100_open</code>.</p>
+  </li>
+  <li>
+    <p>Open repo directory on your local computer and go into <code class="highlighter-rouge">sdk</code> folder. As we could see in the following structure</p>
+
+    <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sdk
+├── board
+├── csi_core
+├── csi_driver
+├── csi_kernel
+├── libs
+├── projects
+├── utilities
+└── VERSION
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">board</code></p>
+
+    <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>board
+ └─wujian100_open_evb
+     │  board_init.c
+     │  gcc_csky.ld
+     │
+     └─include
+             pin.h
+             test_driver_config.h
+             test_kernel_config.h
+</code></pre></div>    </div>
+
+    <p>board folder contains hardware initialize files.</p>
+    <ul>
+      <li><code class="highlighter-rouge">board_init.c</code> is called before main function. It configures clock timer used as record and delay and usart used as output.</li>
+      <li><code class="highlighter-rouge">gcc_csky.ld</code> is the compilation link configuration, which configures the storage location of each field of the firmware generated by compilation, including i-sram, sram and heap size.</li>
+      <li><code class="highlighter-rouge">pin.h</code> defines pin names used in examples and test projects.</li>
+      <li><code class="highlighter-rouge">test_driver_config.h</code> defines enabilty for test projects.</li>
+      <li><code class="highlighter-rouge">test_kernel_config.h</code> defines names for rtos used in test projects.</li>
+    </ul>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">csi_core</code></p>
+
+    <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>csi_core
+ └─include
+         core_rv32.h
+         csi_core.h
+         csi_rv32_gcc.h
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">csi_driver</code></p>
+
+    <pre><code class="language-tree">csi_driver
+ ├─include
+ │      drv_aes.h
+ │      drv_common.h
+ │      drv_crc.h
+ │      drv_dmac.h
+ │      drv_eflash.h
+ │      drv_errno.h
+ │      drv_gpio.h
+ │      drv_i2s.h
+ │      drv_iic.h
+ │      drv_intc.h
+ │      drv_irq.h
+ │      drv_pmu.h
+ │      drv_pwm.h
+ │      drv_rsa.h
+ │      drv_rtc.h
+ │      drv_sha.h
+ │      drv_spi.h
+ │      drv_spiflash.h
+ │      drv_timer.h
+ │      drv_trng.h
+ │      drv_usart.h
+ │      drv_wdt.h
+ │
+ └─wujian100_open
+     │  devices.c
+     │  isr.c
+     │  lib.c
+     │  novic_irq_tbl.c
+     │  pinmux.c
+     │  startup.S
+     │  system.c
+     │  sys_freq.c
+     │  trap_c.c
+     │  vectors.S
+     │  wj_dmac_v2.c
+     │  wj_irq.c
+     │  wj_oip_gpio.c
+     │  wj_oip_timer.c
+     │  wj_oip_wdt.c
+     │  wj_pwm.c
+     │  wj_rtc.c
+     │  wj_usi.c
+     │  wj_usi_iic.c
+     │  wj_usi_spi.c
+     │  wj_usi_usart.c
+     │  wj_usi_wrap.c
+     │
+     └─include
+             drv_usi_iic.h
+             drv_usi_spi.h
+             drv_usi_usart.h
+             io.h
+             pinmux.h
+             pin_name.h
+             soc.h
+             sys_freq.h
+             usi_pin_planning.h
+             wj_dmac_v2.h
+             wj_oip_gpio.h
+             wj_oip_timer.h
+             wj_oip_wdt.h
+             wj_pwm.h
+             wj_rtc.h
+             wj_usi.h
+             wj_usi_iic.h
+             wj_usi_spi.h
+             wj_usi_usart.h
+</code></pre>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">csi_kernel</code></p>
+
+    <pre><code class="language-tree">csi_kernel
+ ├─include
+ │      csi_kernel.h
+ │
+ └─rhino
+     ├─adapter
+     │      csi_rhino.c
+     │
+     ├─arch
+     │  ├─include
+     │  │      k_config.h
+     │  │      k_types.h
+     │  │      port.h
+     │  │
+     │  └─riscv
+     │          cpu_impl.c
+     │          csky_sched.c
+     │          port_c.c
+     │          port_s.S
+     │
+     ├─board
+     │      board_cpu_pwr.c
+     │      board_cpu_pwr_rtc.c
+     │      board_cpu_pwr_systick.c
+     │      board_cpu_pwr_timer.c
+     │
+     ├─common
+     │      k_atomic.c
+     │      k_atomic.h
+     │      k_cpuset.h
+     │      k_ffs.c
+     │      k_ffs.h
+     │      k_fifo.c
+     │      k_trace.c
+     │
+     ├─core
+     │  │  k_buf_queue.c
+     │  │  k_dyn_mem_proc.c
+     │  │  k_err.c
+     │  │  k_event.c
+     │  │  k_idle.c
+     │  │  k_mm.c
+     │  │  k_mm_blk.c
+     │  │  k_mm_debug.c
+     │  │  k_mutex.c
+     │  │  k_obj.c
+     │  │  k_pend.c
+     │  │  k_queue.c
+     │  │  k_ringbuf.c
+     │  │  k_sched.c
+     │  │  k_sem.c
+     │  │  k_stats.c
+     │  │  k_sys.c
+     │  │  k_task.c
+     │  │  k_task_sem.c
+     │  │  k_tick.c
+     │  │  k_time.c
+     │  │  k_timer.c
+     │  │  k_workqueue.c
+     │  │
+     │  └─include
+     │          k_api.h
+     │          k_bitmap.h
+     │          k_buf_queue.h
+     │          k_critical.h
+     │          k_default_config.h
+     │          k_endian.h
+     │          k_err.h
+     │          k_event.h
+     │          k_fifo.h
+     │          k_hook.h
+     │          k_internal.h
+     │          k_list.h
+     │          k_mm.h
+     │          k_mm_blk.h
+     │          k_mm_debug.h
+     │          k_mm_region.h
+     │          k_mutex.h
+     │          k_obj.h
+     │          k_queue.h
+     │          k_ringbuf.h
+     │          k_sched.h
+     │          k_sem.h
+     │          k_soc.h
+     │          k_stats.h
+     │          k_sys.h
+     │          k_task.h
+     │          k_task_sem.h
+     │          k_time.h
+     │          k_timer.h
+     │          k_trace.h
+     │          k_workqueue.h
+     │
+     ├─driver
+     │      coretim.h
+     │      hook_impl.c
+     │      hook_weak.c
+     │      systick.c
+     │      yoc_impl.c
+     │
+     └─pwrmgmt
+             cpu_pwr_api.h
+             cpu_pwr_config.h
+             cpu_pwr_hal_lib.h
+             cpu_pwr_lib.h
+             cpu_tickless.h
+             dl_list.h
+             pwr_debug.h
+             pwr_state.h
+</code></pre>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">libs</code></p>
+
+    <pre><code class="language-tree">libs
+ │  libnewlib_wrap.a
+ │
+ ├─include
+ │  │  errno.h
+ │  │  mm.h
+ │  │  mm_queue.h
+ │  │  syslog.h
+ │  │  time.h
+ │  │  umm_heap.h
+ │  │
+ │  ├─ringbuffer
+ │  │      ringbuffer.h
+ │  │
+ │  └─sys
+ │          _stdint.h
+ │
+ ├─libc
+ │      clock_gettime.c
+ │      malloc.c
+ │      minilibc_port.c
+ │      _init.c
+ │
+ ├─mm
+ │      dq_addlast.c
+ │      dq_rem.c
+ │      lib_mallinfo.c
+ │      mm_addfreechunk.c
+ │      mm_free.c
+ │      mm_initialize.c
+ │      mm_leak.c
+ │      mm_mallinfo.c
+ │      mm_malloc.c
+ │      mm_size2ndx.c
+ │
+ ├─ringbuffer
+ │      ringbuffer.c
+ │
+ └─syslog
+         syslog.c
+</code></pre>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">projects</code></p>
+
+    <pre><code class="language-tree">projects
+ ├─benchmark
+ │  ├─coremark
+ │  │
+ │  └─dhrystone
+ │
+ ├─examples
+ │  ├─core
+ │  │  └─vic
+ │  │
+ │  ├─driver
+ │  │  ├─dmac
+ │  │  │
+ │  │  ├─gpio
+ │  │  │
+ │  │  ├─timer
+ │  │  │
+ │  │  ├─usart
+ │  │  │
+ │  │  └─wdt
+ │  │
+ │  ├─hello_world
+ │  │
+ │  └─kernel
+ │      ├─event
+ │      │
+ │      ├─mem_pool
+ │      │
+ │      ├─message_q
+ │      │
+ │      ├─mutex
+ │      │
+ │      ├─sem
+ │      │
+ │      ├─task
+ │      │
+ │      ├─time
+ │      │
+ │      └─timer
+ │
+ └─tests
+     └─driver
+</code></pre>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">utilities</code></p>
+
+    <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>utilities
+    aft_build.sh
+    flash.init
+    gdb.init
+</code></pre></div>    </div>
+  </li>
+</ol>
+:ET

@@ -1,0 +1,160 @@
+I"�><h2 id="fpga-development-with-wujian100-soc">FPGA Development with wujian100 SoC</h2>
+
+<h3 id="part-one-bitsream-generation">Part One: Bitsream Generation</h3>
+
+<p>Author: 加一(Jiayi)</p>
+
+<h2 id="something-to-say">Something to say</h2>
+
+<p>Recently I participate a contest named Integrate Circuit Innovation Contest which requires me to use WJ100 developed by Ali Inc. team t-head and a FPGA develop board with Xlinx XC7A200TR3B Core. It’s not my first time to cope with FPGA but still, I find it difficult to interpret Verilog Code and make the FPGA works. Luckily, with the help of WJ100 Sdk and CDK(C-sky Develop Kit) which developed by Ali Inc. we could jump the Verilog and long waiting synthesizing part directly to use the pre-setted circuit and easy writing C to develop.</p>
+
+<hr />
+
+<h2 id="about-wj100">About WJ100</h2>
+
+<blockquote>
+  <p>T-Head’s Wujian SoC Platform utilizes the cloud-terminal-integration design philosophy that fuses software and hardware. Full stack integration of chips, operating systems and algorithms enables customers to develop chip products that can be mass-production.</p>
+
+  <p>Low power consumption: User-defined power consumption scenarios, with standby power consumption of less than 1uA, and operating power consumption of less than 100uA/MHz</p>
+</blockquote>
+
+<p>According to the official sites of Pinhead Inc., WJ100 is a low cost and high power efficiency SoC, which barely means that it could be easily deployed on any chips and consumes lower power.</p>
+
+<p>However, as I talked before, it is a open source project and as I believed, the real function of this SoC is to simplify the use of FPGA and to offer the developer a brand new way to develop: integrate Soc and FPGA to deal with some projects which require both power efficiency and fast steady frequency.</p>
+
+<ul>
+  <li>related websites
+<a href="https://www.t-head.cn/">t-head</a></li>
+</ul>
+
+<hr />
+
+<h2 id="how-to-use-wj100-soc">How to use WJ100 SoC</h2>
+
+<p>This tutorial is for those who utilize vivado to generate bitstream file and CDK to develop your own projects with <em>Windows</em>.</p>
+
+<h3 id="part-1-bitstream-generation">Part 1 Bitstream Generation</h3>
+
+<ol>
+  <li>
+    <p>clone <a href="https://github.com/SHIELDJY/wujian100_open">wujian100_open</a> project into your computer with git bash or github. Or just download and unzip it.</p>
+  </li>
+  <li>
+    <p>As demonstrated by <a href="https://github.com/T-head-Semi/wujian100_open">readme.md</a> in wujian100_open repo, the structure of this repo is as follwing</p>
+
+    <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Directory Structure
+ |--Project                //open source project work directory  
+ |--riscv_toolchain      //tool chain install directory download from t-head.cn
+ |--wujian100_open       //wujian100_open project get from github
+     |--case               //test case example for simulation
+     |--doc                //wujian100_open user guide
+     |--fpga               //FPGA script
+     |--lib                //compile script for simulation
+     |--regress            //regression result
+     |--sdk                //software design kit
+     |--soc                //Soc RTL source code
+     |--tb                 //test bench
+     |--tools              //simulation script and setup file
+     |--workdir            //simulation directory
+     |--LICENSE
+     |--README.md
+</code></pre></div>    </div>
+
+    <p>according to this structure what we need for bitstram generation is in <code class="highlighter-rouge">soc</code> and <code class="highlighter-rouge">fpga</code> folder.</p>
+
+    <ul>
+      <li>THE FOLLOWING PARTS 3. – ARE INDIRECTLY INTERPRETED FROM <a href="https://occ.t-head.cn/community/article_detail?id=654091577878118400">wujian100_open的FPGA实现——如何用vivado生成wujian100_open的比特流文件</a> CHINESE DEVELOPER COULD DIRECTLY LOOK UP IN THIS PAGE. THANK Lianglonghui FOR HIS SHARING</li>
+    </ul>
+  </li>
+  <li>
+    <p>Prep your Vivado, I use vivado 2018.3, but as I believe the newer or older versions could also work, the demonstration all runs in vivado 2018.3 HLX Edition and windows 10.</p>
+
+    <ol>
+      <li>
+        <p>Open your vivado and create a new RTL project.
+  <img src="https://s1.ax1x.com/2020/03/26/GpwkLR.png" alt="step3.1" /></p>
+      </li>
+      <li>
+        <p>Add source directory <code class="highlighter-rouge">./wujian100_open/soc</code> and <code class="highlighter-rouge">wujian100_open_fpga_top.v</code> in directory <code class="highlighter-rouge">./wujian100_open/fpga</code>.</p>
+      </li>
+      <li>
+        <p>Check <code class="highlighter-rouge">Scan and add RTL files into project</code>, <code class="highlighter-rouge">copy source into project</code> and <code class="highlighter-rouge">add sources from subdirectory</code>.
+  <img src="https://s1.ax1x.com/2020/03/26/GpwmFK.png" alt="step3.2" /></p>
+      </li>
+      <li>
+        <p>Add constrain file <code class="highlighter-rouge">XC7A200T3B</code> in directory <code class="highlighter-rouge">./wujian100_open/fpga/xdc</code> and check <code class="highlighter-rouge">copy constrain into project</code>
+  <img src="https://s1.ax1x.com/2020/03/26/GpwZo6.png" alt="step3.4" /></p>
+      </li>
+      <li>
+        <p>Search device <code class="highlighter-rouge">XC7A200TFBG484-2L</code> in <code class="highlighter-rouge">Part</code> menu
+  <img src="https://s1.ax1x.com/2020/03/26/GpwFy9.png" alt="step3.5" /></p>
+      </li>
+      <li>
+        <p>Finish create and the guide should be like
+  <img src="https://s1.ax1x.com/2020/03/26/GpwiQJ.png" alt="step3.6" /></p>
+      </li>
+      <li>
+        <p>After vivado has created the project, as we could see, there might be 4 syntax error files, which is due to wrong file type. Hence we should correct it manually by right click every error file and choose <code class="highlighter-rouge">source file property</code> and change it property into <code class="highlighter-rouge">verilog header</code> as following.
+  <img src="https://s1.ax1x.com/2020/03/26/GpwwlQ.png" alt="step3.7" /></p>
+      </li>
+      <li>
+        <p>As we add our sources by adding directory, we actually added a redandent source file. We need to remove file <code class="highlighter-rouge">wujian100_open_top.v</code>.</p>
+      </li>
+      <li>
+        <p>After removing the file, we could set the top file <code class="highlighter-rouge">wujian100_open_fpga_top.v</code> to be the first to compile.
+  <img src="https://s1.ax1x.com/2020/03/26/Gpw8eI.png" alt="step3.9" /></p>
+
+        <ul>
+          <li>TWO important STEP</li>
+        </ul>
+      </li>
+      <li>
+        <p>Since the constrain file did not constrain the clock, we must add following xdc code into the file <code class="highlighter-rouge">XC7A200T3B.xdc</code></p>
+
+        <div class="language-verilog highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">create_clock</span> <span class="o">-</span><span class="n">name</span> <span class="o">{</span><span class="n">EHS</span><span class="o">}</span> <span class="p">[</span><span class="n">get_ports</span> <span class="n">PIN_EHS</span><span class="p">]</span> <span class="o">-</span><span class="n">period</span> <span class="mi">50</span> <span class="o">-</span><span class="n">waveform</span> <span class="o">{</span><span class="mi">0</span> <span class="mi">25</span><span class="o">}</span>
+<span class="n">create_clock</span>  <span class="o">-</span><span class="n">name</span> <span class="o">{</span><span class="n">JTAG_CLK</span><span class="o">}</span> <span class="p">[</span><span class="n">get_ports</span> <span class="n">PAD_JTAG_TCLK</span><span class="p">]</span> <span class="o">-</span><span class="n">period</span> <span class="mi">1000</span> <span class="o">-</span><span class="n">waveform</span> <span class="o">{</span><span class="mi">0</span> <span class="mi">500</span><span class="o">}</span>
+
+<span class="n">set_clock_groups</span> <span class="o">-</span><span class="n">asynchronous</span> <span class="o">-</span><span class="n">name</span> <span class="o">{</span><span class="n">clkgroup_1</span><span class="o">}</span> <span class="o">-</span><span class="n">group</span> <span class="p">[</span><span class="n">get_clocks</span> <span class="o">{</span><span class="n">EHS</span> <span class="n">JTAG_CLK</span><span class="o">}</span><span class="p">]</span>
+
+<span class="n">set_false_path</span> <span class="o">-</span><span class="n">through</span> <span class="p">[</span><span class="n">get_ports</span> <span class="n">PIN_EHS</span><span class="p">]</span>
+
+<span class="p">#</span><span class="n">set_clock_groups</span> <span class="o">-</span><span class="n">name</span> <span class="o">{</span><span class="n">Inferred_clkgroup_0</span><span class="o">}</span> <span class="o">-</span><span class="n">asynchronous</span> <span class="o">-</span><span class="n">group</span> <span class="p">[</span><span class="n">get_clocks</span> <span class="o">{</span><span class="n">wujian100_open_top</span><span class="o">|</span><span class="n">PAD_JTAG_TCLK</span><span class="o">}</span><span class="p">]</span>
+
+<span class="n">set_property</span> <span class="n">ASYNC_REG</span> <span class="n">TRUE</span> <span class="p">[</span><span class="n">get_cells</span> <span class="o">{</span><span class="n">x_aou_top</span><span class="o">/</span><span class="n">x_rtc0_sec_top</span><span class="o">/</span><span class="n">x_rtc_pdu_top</span><span class="o">/</span><span class="n">x_rtc_clr_sync</span><span class="o">/</span><span class="n">pclk_load_sync2_reg</span><span class="o">}</span><span class="p">]</span>
+<span class="n">set_property</span> <span class="n">ASYNC_REG</span> <span class="n">TRUE</span> <span class="p">[</span><span class="n">get_cells</span> <span class="o">{</span><span class="n">x_aou_top</span><span class="o">/</span><span class="n">x_rtc0_sec_top</span><span class="o">/</span><span class="n">x_rtc_pdu_top</span><span class="o">/</span><span class="n">x_rtc_clr_sync</span><span class="o">/</span><span class="n">rtc_load_sync2_reg</span><span class="o">}</span><span class="p">]</span>
+<span class="n">set_property</span> <span class="n">ASYNC_REG</span> <span class="n">TRUE</span> <span class="p">[</span><span class="n">get_cells</span> <span class="o">{</span><span class="n">x_aou_top</span><span class="o">/</span><span class="n">x_rtc0_sec_top</span><span class="o">/</span><span class="n">x_rtc_pdu_top</span><span class="o">/</span><span class="n">x_rtc_clr_sync</span><span class="o">/</span><span class="n">pclk_load_sync1_reg</span><span class="o">}</span><span class="p">]</span>
+<span class="n">set_property</span> <span class="n">ASYNC_REG</span> <span class="n">TRUE</span> <span class="p">[</span><span class="n">get_cells</span> <span class="o">{</span><span class="n">x_aou_top</span><span class="o">/</span><span class="n">x_rtc0_sec_top</span><span class="o">/</span><span class="n">x_rtc_pdu_top</span><span class="o">/</span><span class="n">x_rtc_clr_sync</span><span class="o">/</span><span class="n">rtc_load_sync1_reg</span><span class="o">}</span><span class="p">]</span>
+<span class="n">set_property</span> <span class="n">ASYNC_REG</span> <span class="n">TRUE</span> <span class="p">[</span><span class="n">get_cells</span> <span class="o">{</span><span class="n">x_cpu_top</span><span class="o">/</span><span class="n">CPU</span><span class="o">/</span><span class="n">x_cr_had_top</span><span class="o">/</span><span class="n">A15d</span><span class="o">/</span><span class="n">A74</span><span class="o">/</span><span class="n">A10b_reg</span><span class="o">}</span><span class="p">]</span>
+<span class="n">set_property</span> <span class="n">ASYNC_REG</span> <span class="n">TRUE</span> <span class="p">[</span><span class="n">get_cells</span> <span class="o">{</span><span class="n">x_cpu_top</span><span class="o">/</span><span class="n">CPU</span><span class="o">/</span><span class="n">x_cr_had_top</span><span class="o">/</span><span class="n">A15d</span><span class="o">/</span><span class="n">A74</span><span class="o">/</span><span class="n">A18597_reg</span><span class="o">}</span><span class="p">]</span>
+<span class="n">set_property</span> <span class="n">ASYNC_REG</span> <span class="n">TRUE</span> <span class="p">[</span><span class="n">get_cells</span> <span class="o">{</span><span class="n">x_cpu_top</span><span class="o">/</span><span class="n">CPU</span><span class="o">/</span><span class="n">x_cr_had_top</span><span class="o">/</span><span class="n">A15d</span><span class="o">/</span><span class="n">A1862d</span><span class="o">/</span><span class="n">A10b_reg</span><span class="o">}</span><span class="p">]</span>
+<span class="n">set_property</span> <span class="n">ASYNC_REG</span> <span class="n">TRUE</span> <span class="p">[</span><span class="n">get_cells</span> <span class="o">{</span><span class="n">x_cpu_top</span><span class="o">/</span><span class="n">CPU</span><span class="o">/</span><span class="n">x_cr_had_top</span><span class="o">/</span><span class="n">A15d</span><span class="o">/</span><span class="n">A1862d</span><span class="o">/</span><span class="n">A18597_reg</span><span class="o">}</span><span class="p">]</span>
+<span class="n">set_property</span> <span class="n">ASYNC_REG</span> <span class="n">TRUE</span> <span class="p">[</span><span class="n">get_cells</span> <span class="o">{</span><span class="n">x_cpu_top</span><span class="o">/</span><span class="n">CPU</span><span class="o">/</span><span class="n">x_cr_had_top</span><span class="o">/</span><span class="n">A15d</span><span class="o">/</span><span class="n">A75</span><span class="o">/</span><span class="n">A10b_reg</span><span class="o">}</span><span class="p">]</span>
+<span class="n">set_property</span> <span class="n">ASYNC_REG</span> <span class="n">TRUE</span> <span class="p">[</span><span class="n">get_cells</span> <span class="o">{</span><span class="n">x_cpu_top</span><span class="o">/</span><span class="n">CPU</span><span class="o">/</span><span class="n">x_cr_had_top</span><span class="o">/</span><span class="n">A15d</span><span class="o">/</span><span class="n">A75</span><span class="o">/</span><span class="n">A18597_reg</span><span class="o">}</span><span class="p">]</span>
+</code></pre></div>        </div>
+
+        <p><img src="https://s1.ax1x.com/2020/03/26/GpwtFf.png" alt="step3.10" /></p>
+      </li>
+      <li>
+        <p>change one name from <code class="highlighter-rouge">get_nets PAD_JTAG_TCLK_c</code> into <code class="highlighter-rouge">get_nets PAD_JTAG_TCLK</code>. i.e.,</p>
+      </li>
+    </ol>
+
+    <div class="language-verilog highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="p">#</span> <span class="n">set_property</span> <span class="n">CLOCK_DEDICATED_ROUTE</span> <span class="n">FALSE</span> <span class="p">[</span><span class="n">get_nets</span> <span class="n">PAD_JTAG_TCLK_c</span><span class="p">]</span>
+   <span class="n">into</span>
+   <span class="n">set_property</span> <span class="n">CLOCK_DEDICATED_ROUTE</span> <span class="n">FALSE</span> <span class="p">[</span><span class="n">get_nets</span> <span class="n">PAD_JTAG_TCLK</span><span class="p">]</span>
+</code></pre></div>    </div>
+
+    <ol>
+      <li>
+        <p>Generate Bitstram and watch two sets of Rick and Morty since it costs me 31 minutes to finish the bitstream writing.</p>
+      </li>
+      <li>
+        <p>Finally we receive the success message. Find your <code class="highlighter-rouge">wujian100_open_top.bit</code> file in directory <code class="highlighter-rouge">./{your_project_name}.runs/impl_1}</code>. And change the file name into cfg.bit.</p>
+      </li>
+      <li>
+        <p>Copy your cfg.bit file into your FPGA. Check if it works.(First time configuration may failed. Just press re-prog one another time)</p>
+      </li>
+    </ol>
+  </li>
+</ol>
+:ET

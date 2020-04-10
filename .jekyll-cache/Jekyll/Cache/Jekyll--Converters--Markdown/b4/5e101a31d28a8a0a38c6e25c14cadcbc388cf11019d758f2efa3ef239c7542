@@ -1,0 +1,193 @@
+I"!<h2 id="fpga-development-with-wujian100-soc">FPGA Development with wujian100 SoC</h2>
+
+<h3 id="part-five-gpio-led-on-and-off">Part Five: GPIO (LED ON and OFF)</h3>
+
+<p>Author: 加一(Jiayi)</p>
+
+<h2 id="something-to-say">Something to say</h2>
+
+<p>Recently I participate a contest named Integrate Circuit Innovation Contest which requires me to use WJ100 developed by Ali Inc. team t-head and a FPGA develop board with Xlinx XC7A200TR3B Core. It’s not my first time to cope with FPGA but still, I find it difficult to interpret Verilog Code and make the FPGA works. Luckily, with the help of WJ100 Sdk and CDK(C-sky Develop Kit) which developed by Ali Inc. we could jump the Verilog and long waiting synthesizing part directly to use the pre-setted circuit and easy writing C to develop.</p>
+
+<hr />
+
+<h2 id="about-wj100">About WJ100</h2>
+
+<blockquote>
+  <p>T-Head’s Wujian SoC Platform utilizes the cloud-terminal-integration design philosophy that fuses software and hardware. Full stack integration of chips, operating systems and algorithms enables customers to develop chip products that can be mass-production.</p>
+
+  <p>Low power consumption: User-defined power consumption scenarios, with standby power consumption of less than 1uA, and operating power consumption of less than 100uA/MHz</p>
+</blockquote>
+
+<p>According to the official sites of t-head Inc., WJ100 is a low cost and high power efficiency SoC, which barely means that it could be easily deployed on any chips and consumes lower power.</p>
+
+<p>However, as I talked before, it is a open source project and as I believed, the real function of this SoC is to simplify the use of FPGA and to offer the developer a brand new way to develop: integrate Soc and FPGA to deal with some projects which require both power efficiency and fast steady frequency.</p>
+
+<ul>
+  <li>related websites
+<a href="https://www.t-head.cn/">t-head</a></li>
+</ul>
+
+<h3 id="how-to-use-wj100-soc">How to use WJ100 SoC</h3>
+
+<p>This tutorial is for those who utilize vivado to generate bitstream file and CDK to develop your own projects on <em>Windows</em>.</p>
+
+<ul>
+  <li>
+    <p>For Part 1 Bitsream Generation please refer to <a href="https://shieldjy.github.io/2020/03/25/FPGA-Development-with-WJ100-SoC/">Part_1_Bitstream_Generation</a>.</p>
+  </li>
+  <li>
+    <p>For Part 2 CDK Toolkit and wujian100 SDK please refer to <a href="https://shieldjy.github.io/2020/03/27/FPGA-Development-with-WJ100-SoC/">Part_2_CDK_Toolkit&amp;Wujian100_SDK</a>.</p>
+  </li>
+  <li>
+    <p>For Part 3 Start a New Project on CDK please refer to <a href="https://shieldjy.github.io/2020/03/29/FPGA-Development-with-WJ100-SoC/">Part_3_Start_a_New_Project_on_CDK</a></p>
+  </li>
+  <li>
+    <p>For Part 4 Hello World please refer to <a href="https://shieldjy.github.io/2020/03/31/FPGA-Development-with-WJ100-SoC/">Part4_Hello_World</a></p>
+  </li>
+</ul>
+
+<h3 id="part-5-gpio">Part 5 GPIO</h3>
+
+<h4 id="1-what-is-gpio">1 What is GPIO</h4>
+
+<blockquote>
+  <p>A general-purpose input/output (GPIO) is an uncommitted digital signal pin on an integrated circuit or electronic circuit board whose behavior—including whether it acts as input or output—is controllable by the user at run time.
+<em>wikipedia</em></p>
+</blockquote>
+
+<p>To be brief, GPIO is what we use to write or read digital High/Low signal to and from.</p>
+
+<h4 id="2-let-us-see-what-we-have-got-in-library">2 Let us see what we have got in library</h4>
+
+<p>Open <code class="highlighter-rouge">drv_gpio.h</code>, as we could see in the following external functions that we could call. They are expained quite elaborate by t-head Inc..</p>
+
+<pre><code class="language-C++">/**
+  \brief       Initialize GPIO handle.
+  \param[in]   gpio_pin    gpio pin idx.
+  \param[in]   cb_event  event callback function \ref gpio_event_cb_t
+  \return      gpio_pin_handle
+*/
+gpio_pin_handle_t csi_gpio_pin_initialize(int32_t gpio_pin, gpio_event_cb_t cb_event);
+
+/**
+  \brief       De-initialize GPIO pin handle.stops operation and releases the software resources used by the handle.
+  \param[in]   handle    gpio pin handle to operate.
+  \return      error code
+*/
+int32_t csi_gpio_pin_uninitialize(gpio_pin_handle_t handle);
+
+/**
+  \brief       control gpio power.
+  \param[in]   handle  gpio handle to operate.
+  \param[in]   state   power state.\ref csi_power_stat_e.
+  \return      error code
+*/
+int32_t csi_gpio_power_control(gpio_pin_handle_t handle, csi_power_stat_e state);
+
+/**
+  \brief       config pin mode
+  \param[in]   pin       gpio pin handle to operate.
+  \param[in]   mode      \ref gpio_mode_e
+  \return      error code
+*/
+int32_t csi_gpio_pin_config_mode(gpio_pin_handle_t handle,
+                                 gpio_mode_e mode);
+
+/**
+  \brief       config pin direction
+  \param[in]   pin       gpio pin handle to operate.
+  \param[in]   dir       \ref gpio_direction_e
+  \return      error code
+*/
+int32_t csi_gpio_pin_config_direction(gpio_pin_handle_t handle,
+                                      gpio_direction_e dir);
+
+/**
+  \brief       config pin
+  \param[in]   pin       gpio pin handle to operate.
+  \param[in]   mode      \ref gpio_mode_e
+  \param[in]   dir       \ref gpio_direction_e
+  \return      error code
+*/
+int32_t csi_gpio_pin_config(gpio_pin_handle_t handle,
+                            gpio_mode_e mode,
+                            gpio_direction_e dir);
+
+/**
+  \brief       Set one or zero to the selected GPIO pin.
+  \param[in]   pin       gpio pin handle to operate.
+  \param[in]   value     value to be set
+  \return      error code
+*/
+int32_t csi_gpio_pin_write(gpio_pin_handle_t handle, bool value);
+
+/**
+  \brief       Get the value of  selected GPIO pin.
+  \param[in]   pin       gpio pin handle to operate.
+  \param[out]  value     buffer to store the pin value
+  \return      error code
+*/
+int32_t csi_gpio_pin_read(gpio_pin_handle_t handle, bool *value);
+
+/**
+  \brief       set GPIO interrupt mode.
+  \param[in]   pin       gpio pin handle to operate.
+  \param[in]   mode      irq mode to be set
+  \param[in]   enable    enable flag
+  \return      error code
+*/
+int32_t csi_gpio_pin_set_irq(gpio_pin_handle_t handle, gpio_irq_mode_e mode, bool enable);
+</code></pre>
+
+<h4 id="3-how-to-use-these-functions">3 How to use these functions</h4>
+
+<p>Now we have reached to the high points of this article, the use of GPIO in wujian100 SoC.</p>
+
+<ol>
+  <li>
+    <p>Unitialize the GPIO in case pre-configuration has been done unpurposely.</p>
+
+    <pre><code class="language-C++"> csi_gpio_pin_uninitialize(gpio_pin_handle_t pin);
+</code></pre>
+  </li>
+  <li>
+    <p>Initialize the GPIO function by port directly since wujian100 official offers only one single port.</p>
+
+    <pre><code class="language-C++"> pin = csi_gpio_pin_initialize(gpio_pin, gpio_interrupt_handler);
+</code></pre>
+  </li>
+  <li>
+    <p>Set GPIO pin mode. There are 5 modes for us to choose.</p>
+
+    <p>Three for input: <code class="highlighter-rouge">GPIO_MODE_PULLNONE</code>,<code class="highlighter-rouge">GPIO_MODE_PULLUP</code> and <code class="highlighter-rouge">GPIO_MODE_PULLDOWN</code></p>
+
+    <p>Two for output: <code class="highlighter-rouge">GPIO_MODE_OPEN_DRAIN</code> and <code class="highlighter-rouge">GPIO_MODE_PUSH_PULL</code></p>
+
+    <p>For more knowledge about GPIO mode, please refer to <a href="https://embeddedartistry.com/blog/2018/06/04/demystifying-microcontroller-gpio-settings/">embeddedartistry</a> by <em>PHILLIP JOHNSTON</em>.</p>
+
+    <p>In this case we set mode as push pull used for output.</p>
+
+    <pre><code class="language-C++"> csi_gpio_pin_config_mode(pin, GPIO_MODE_PUSH_PULL);
+</code></pre>
+  </li>
+  <li>
+    <p>Set the GPIO direction as Output/Input whatever you would like it to be. In this case, well, we set it as Output since I have nothing to input.</p>
+
+    <pre><code class="language-C++"> csi_gpio_pin_config_direction(pin, GPIO_DIRECTION_OUTPUT);
+</code></pre>
+  </li>
+  <li>
+    <p>After configuration, we might need to output value to the port.</p>
+
+    <pre><code class="language-C++"> csi_gpio_pin_write(pin, 1); //write pin with high voltage level
+ csi_gpio_pin_write(pin, 0); //write pin with low voltage level
+</code></pre>
+  </li>
+  <li>
+    <p>If you would like to read from a pin. Be sure to prepare a bool buffer, i.e. <code class="highlighter-rouge">bool val;</code> and read from pin using</p>
+
+    <pre><code class="language-C++"> csi_gpio_pin_read(pin, &amp;val);
+</code></pre>
+  </li>
+</ol>
+:ET

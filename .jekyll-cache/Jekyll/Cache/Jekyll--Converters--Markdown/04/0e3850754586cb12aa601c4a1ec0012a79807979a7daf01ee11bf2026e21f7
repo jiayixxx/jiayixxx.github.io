@@ -1,0 +1,140 @@
+I"E <h2 id="fpga-development-with-wujian100-soc">FPGA Development with wujian100 SoC</h2>
+
+<h3 id="part-three-start-a-new-project-on-cdk">Part Three: Start a New Project on CDK</h3>
+
+<p>Author: 加一(Jiayi)</p>
+
+<h2 id="something-to-say">Something to say</h2>
+
+<p>Recently I participate a contest named Integrate Circuit Innovation Contest which requires me to use WJ100 developed by Ali Inc. team t-head and a FPGA develop board with Xlinx XC7A200TR3B Core. It’s not my first time to cope with FPGA but still, I find it difficult to interpret Verilog Code and make the FPGA works. Luckily, with the help of WJ100 Sdk and CDK(C-sky Develop Kit) which developed by Ali Inc. we could jump the Verilog and long waiting synthesizing part directly to use the pre-setted circuit and easy writing C to develop.</p>
+
+<hr />
+
+<h2 id="about-wj100">About WJ100</h2>
+
+<blockquote>
+  <p>T-Head’s Wujian SoC Platform utilizes the cloud-terminal-integration design philosophy that fuses software and hardware. Full stack integration of chips, operating systems and algorithms enables customers to develop chip products that can be mass-production.</p>
+
+  <p>Low power consumption: User-defined power consumption scenarios, with standby power consumption of less than 1uA, and operating power consumption of less than 100uA/MHz</p>
+</blockquote>
+
+<p>According to the official sites of t-head Inc., WJ100 is a low cost and high power efficiency SoC, which barely means that it could be easily deployed on any chips and consumes lower power.</p>
+
+<p>However, as I talked before, it is a open source project and as I believed, the real function of this SoC is to simplify the use of FPGA and to offer the developer a brand new way to develop: integrate Soc and FPGA to deal with some projects which require both power efficiency and fast steady frequency.</p>
+
+<ul>
+  <li>related websites
+<a href="https://www.t-head.cn/">t-head</a></li>
+</ul>
+
+<h3 id="how-to-use-wj100-soc">How to use WJ100 SoC</h3>
+
+<p>This tutorial is for those who utilize vivado to generate bitstream file and CDK to develop your own projects with <em>Windows</em>.</p>
+
+<ul>
+  <li>
+    <p>For Part 1 Bitsream Generation please refer to <a href="https://shieldjy.github.io/2020/03/25/FPGA-Development-with-WJ100-SoC/">Part_1_Bitstream_Generation</a>.</p>
+  </li>
+  <li>
+    <p>For Part 2 CDK Toolkit and wujian100 SDK please refer to <a href="https://shieldjy.github.io/2020/03/27/FPGA-Development-with-WJ100-SoC/">Part_2_CDK_Toolkit&amp;Wujian100_SDK</a>.</p>
+  </li>
+</ul>
+
+<h3 id="part-3-start-a-new-project-on-cdk">Part 3 Start a New Project on CDK</h3>
+
+<ol>
+  <li>
+    <p>Open your CDK desktop.</p>
+  </li>
+  <li>
+    <p>Before create a new projeck, we need to create a new workspace for it. Click <code class="highlighter-rouge">create a new multi-project workspace</code> and choose your name and path. Finish the create of project.
+ <img src="https://s1.ax1x.com/2020/03/31/GK9EsP.png" alt="step2" /></p>
+  </li>
+  <li>
+    <p>After we have successfully created the workspace, we could now create a new project. Find <code class="highlighter-rouge">Project</code> on your toolbar and choose <code class="highlighter-rouge">new project</code> and there will be a <em>new project</em> window.</p>
+  </li>
+  <li>
+    <p>Since CDK doesn’t offer an template for wujian100, we must choose a core similar to wujian100 SoC. So let us choose <code class="highlighter-rouge">Smartl_E902-BareMetal</code> under <code class="highlighter-rouge">ERISC Series</code>. However, as I believe, whatever you choose are both alright because we are going to delete all the files and change almost every configuration later.
+ <img src="https://s1.ax1x.com/2020/03/31/GK9iRA.png" alt="step4" /></p>
+  </li>
+  <li>
+    <p>Remove every folder in the project you just created. Both in the workspace and in the folder. Be careful because you need to restore <code class="highlighter-rouge">main</code> folder and <code class="highlighter-rouge">{yourprojectname}.cdkprj</code>
+ <img src="https://s1.ax1x.com/2020/03/31/GK9AMt.png" alt="step5" /></p>
+  </li>
+  <li>
+    <p>Go to <code class="highlighter-rouge">wujian100_open</code> repo path and open <code class="highlighter-rouge">sdk</code>, copy following folders to ./{yourcdkprojectname}: <code class="highlighter-rouge">board</code>, <code class="highlighter-rouge">csi_core</code>, <code class="highlighter-rouge">csi_driver</code>, <code class="highlighter-rouge">csi_kernel</code>, <code class="highlighter-rouge">libs</code>, <code class="highlighter-rouge">utilities</code>.
+ <img src="https://s1.ax1x.com/2020/03/31/GK9PGd.png" alt="step6.1" />
+ Open <code class="highlighter-rouge">projects-examples-hello_world</code> and copy <code class="highlighter-rouge">config</code> folder to ./{yourcdkprojectname}, just like:
+ <img src="https://s1.ax1x.com/2020/03/31/GK9FxI.png" alt="step6.2" /></p>
+  </li>
+  <li>
+    <p>Right click <code class="highlighter-rouge">{yourprojectname}</code> in the left side bar or wherever called <code class="highlighter-rouge">project view</code> window and choose <code class="highlighter-rouge">add source folder</code> option.
+ <img src="https://s1.ax1x.com/2020/03/31/GK9eZ8.png" alt="step7" /></p>
+  </li>
+  <li>
+    <p>Add folders just moved to your project folder <em>one by one</em> and click <code class="highlighter-rouge">NO</code> for “copy source folder to current project path”.</p>
+  </li>
+  <li>
+    <p>Finally you should see the project view like this with 8 folders and all its contents are inside.
+ <img src="https://s1.ax1x.com/2020/03/31/GK9mdS.png" alt="step9" /></p>
+  </li>
+  <li>
+    <p>Open <code class="highlighter-rouge">project</code> menu on the toolbar and select <code class="highlighter-rouge">open active project settings</code>.
+<img src="https://s1.ax1x.com/2020/03/31/GK9nIg.png" alt="step10" /></p>
+  </li>
+  <li>
+    <p>In <code class="highlighter-rouge">target</code> label under <code class="highlighter-rouge">target info</code> we could write our description about wujian100, i.e.</p>
+
+    <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Core: wujian100 SoC
+Board: Xilinx XC7A200TR3B
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>In <code class="highlighter-rouge">Compiler</code> label we need to modify include path, delete several include path related to the original template. The include path should be like the following.</p>
+
+    <pre><code class="language-path">$(ProjectPath)
+$(ProjectPath)//configs
+$(ProjectPath)/board/wujian100_open_evb/include
+$(ProjectPath)/csi_core/include
+$(ProjectPath)/csi_driver/include
+$(ProjectPath)/csi_driver/wujian100_open/include
+$(ProjectPath)/csi_kernel/include
+$(ProjectPath)/csi_kernel/rhino/arch/include
+$(ProjectPath)/csi_kernel/rhino/common
+$(ProjectPath)/csi_kernel/rhino/core/include
+$(ProjectPath)/csi_kernel/rhino/driver
+$(ProjectPath)/csi_kernel/rhino/pwrmgmt
+$(ProjectPath)/include
+$(ProjectPath)/libs/include
+$(ProjectPath)/libs/include/ringbuffer
+$(ProjectPath)/libs/include/sys
+</code></pre>
+  </li>
+  <li>
+    <p>In <code class="highlighter-rouge">Assembler</code> label we need also change the include path to be like following.</p>
+
+    <pre><code class="language-path">$(ProjectPath)
+$(ProjectPath)//configs
+</code></pre>
+  </li>
+  <li>
+    <p>In <code class="highlighter-rouge">Linker</code> label under <code class="highlighter-rouge">link file</code> dock, we <code class="highlighter-rouge">must</code> change that into our gcc_csky.ld file.</p>
+
+    <pre><code class="language-path">$(ProjectPath)/board/wujian100_open_evb/gcc_csky.ld
+</code></pre>
+  </li>
+  <li>
+    <p>In <code class="highlighter-rouge">User</code> laber under <code class="highlighter-rouge">Run user programm AFTER build/rebuild</code> dock, we need to change that into our after_bd.sh</p>
+
+    <pre><code class="language-path">$(ProjectPath)/utilities/aft_build.sh
+</code></pre>
+  </li>
+  <li>
+    <p>Click <code class="highlighter-rouge">OK</code> to end the configuration.</p>
+  </li>
+  <li>
+    <p>Build the project and finally we could see the <code class="highlighter-rouge">Done</code> message.
+<img src="https://s1.ax1x.com/2020/03/31/GK9KiQ.png" alt="step17" /></p>
+  </li>
+</ol>
+:ET

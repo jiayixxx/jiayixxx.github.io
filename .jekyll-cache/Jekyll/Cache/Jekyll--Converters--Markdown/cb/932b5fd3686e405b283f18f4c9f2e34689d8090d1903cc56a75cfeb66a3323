@@ -1,0 +1,218 @@
+I"�#<h2 id="fpga-development-with-wujian100-soc">FPGA Development with wujian100 SoC</h2>
+
+<h3 id="part-seven-timer">Part SEVEN: TIMER</h3>
+
+<p>Author: 加一(Jiayi)</p>
+
+<h2 id="something-to-say">Something to say</h2>
+
+<p>Recently I participate a contest named Integrate Circuit Innovation Contest which requires me to use WJ100 developed by Ali Inc. team t-head and a FPGA develop board with Xlinx XC7A200TR3B Core. It’s not my first time to cope with FPGA but still, I find it difficult to interpret Verilog Code and make the FPGA works. Luckily, with the help of WJ100 Sdk and CDK(C-sky Develop Kit) which developed by Ali Inc. we could jump the Verilog and long waiting synthesizing part directly to use the pre-setted circuit and easy writing C to develop.</p>
+
+<hr />
+
+<h2 id="about-wj100">About WJ100</h2>
+
+<blockquote>
+  <p>T-Head’s Wujian SoC Platform utilizes the cloud-terminal-integration design philosophy that fuses software and hardware. Full stack integration of chips, operating systems and algorithms enables customers to develop chip products that can be mass-production.</p>
+
+  <p>Low power consumption: User-defined power consumption scenarios, with standby power consumption of less than 1uA, and operating power consumption of less than 100uA/MHz</p>
+</blockquote>
+
+<p>According to the official sites of t-head Inc., WJ100 is a low cost and high power efficiency SoC, which barely means that it could be easily deployed on any chips and consumes lower power.</p>
+
+<p>However, as I talked before, it is a open source project and as I believed, the real function of this SoC is to simplify the use of FPGA and to offer the developer a brand new way to develop: integrate Soc and FPGA to deal with some projects which require both power efficiency and fast steady frequency.</p>
+
+<ul>
+  <li>related websites
+<a href="https://www.t-head.cn/">t-head</a></li>
+</ul>
+
+<h3 id="how-to-use-wj100-soc">How to use WJ100 SoC</h3>
+
+<p>This tutorial is for those who utilize vivado to generate bitstream file and CDK to develop your own projects on <em>Windows</em>.</p>
+
+<ul>
+  <li>
+    <p>For Part 1 Bitsream Generation please refer to <a href="https://shieldjy.github.io/2020/03/25/FPGA-Development-with-WJ100-SoC/">Part_1_Bitstream_Generation</a>.</p>
+  </li>
+  <li>
+    <p>For Part 2 CDK Toolkit and wujian100 SDK please refer to <a href="https://shieldjy.github.io/2020/03/27/FPGA-Development-with-WJ100-SoC/">Part_2_CDK_Toolkit&amp;Wujian100_SDK</a>.</p>
+  </li>
+  <li>
+    <p>For Part 3 Start a New Project on CDK please refer to <a href="https://shieldjy.github.io/2020/03/29/FPGA-Development-with-WJ100-SoC/">Part_3_Start_a_New_Project_on_CDK</a></p>
+  </li>
+  <li>
+    <p>For Part 4 Hello World please refer to <a href="https://shieldjy.github.io/2020/03/31/FPGA-Development-with-WJ100-SoC/">Part4_Hello_World</a></p>
+  </li>
+  <li>
+    <p>For Part 5 GPIO please refer to <a href="https://shieldjy.github.io/2020/04/06/FPGA-Development-with-WJ100-SoC/">Part5_GPIO</a></p>
+  </li>
+  <li>
+    <p>For Part 6 UART please refer to <a href="https://shieldjy.github.io/2020/04/08/FPGA-Development-with-WJ100-SoC/">Part5_GPIO</a></p>
+  </li>
+</ul>
+
+<h3 id="part-7-timer">Part 7 TIMER</h3>
+
+<h4 id="1-what-is-timer">1 What is Timer</h4>
+
+<p>Timer is a count up counter in SoC. There are normally several opration modes for timer, for example, auto-reload mode, counter mode, manual reload mode, etc. Interrupt is normally used when using auto-reload mode timer for controlling dc motor or any device requires periodical responds.</p>
+
+<p>In wujian100 SoC, there are 16 channels/timers which I am not sure about since the official does not offer any docs. However, there are two modes, i.e. reload mode and freerunning mode which again i am not sure what freerunning could be used for.</p>
+
+<h4 id="2-let-us-see-what-we-have-got-in-library">2 Let us see what we have got in library</h4>
+
+<p>Timer is quite a simple module to use in wujian100 and hence it does not offer us many advanced options. Here is library for timer which could be found in <code class="highlighter-rouge">.\csi_driver\include\drv_timer.h</code>.</p>
+
+<pre><code class="language-C++">/**
+  \brief       Initialize TIMER Interface. 1. Initializes the resources needed for the TIMER interface 2.registers event callback function
+  \param[in]   idx  timer index
+  \param[in]   cb_event  event call back function \ref timer_event_cb_t
+  \param[in]   cb_arg    arguments of cb_event
+  \return      pointer to timer instance
+*/
+timer_handle_t csi_timer_initialize(int32_t idx, timer_event_cb_t cb_event);
+
+/**
+  \brief       De-initialize TIMER Interface. stops operation and releases the software resources used by the interface
+  \param[in]   handle timer handle to operate.
+  \return      error code
+*/
+int32_t csi_timer_uninitialize(timer_handle_t handle);
+
+/**
+  \brief       control timer power.
+  \param[in]   handle  timer handle to operate.
+  \param[in]   state   power state.\ref csi_power_stat_e.
+  \return      error code
+*/
+int32_t csi_timer_power_control(timer_handle_t handle, csi_power_stat_e state);
+
+/**
+  \brief       config timer mode.
+  \param[in]   handle timer handle to operate.
+  \param[in]   mode      \ref timer_mode_e
+  \return      error code
+*/
+int32_t csi_timer_config(timer_handle_t handle, timer_mode_e mode);
+
+/**
+  \brief       Set timeout just for the reload mode.
+  \param[in]   handle timer handle to operate.
+  \param[in]   timeout the timeout value in microseconds(us).
+  \return      error code
+*/
+int32_t csi_timer_set_timeout(timer_handle_t handle, uint32_t timeout);
+
+/**
+  \brief       Start timer.
+  \param[in]   handle timer handle to operate.
+  \return      error code
+*/
+int32_t csi_timer_start(timer_handle_t handle);
+
+/**
+  \brief       Stop timer.
+  \param[in]   handle timer handle to operate.
+  \return      error code
+*/
+int32_t csi_timer_stop(timer_handle_t handle);
+
+/**
+  \brief       suspend timer.
+  \param[in]   handle timer handle to operate.
+  \return      error code
+*/
+int32_t csi_timer_suspend(timer_handle_t handle);
+
+/**
+  \brief       resume timer.
+  \param[in]   handle timer handle to operate.
+  \return      error code
+*/
+int32_t csi_timer_resume(timer_handle_t handle);
+
+/**
+  \brief       get timer current value
+  \param[in]   handle timer handle to operate.
+  \param[out]   value     timer current value
+  \return      error code
+*/
+int32_t csi_timer_get_current_value(timer_handle_t handle, uint32_t *value);
+
+/**
+  \brief       Get TIMER status.
+  \param[in]   handle timer handle to operate.
+  \return      TIMER status \ref timer_status_t
+*/
+timer_status_t csi_timer_get_status(timer_handle_t handle);
+
+/**
+  \brief       get timer reload value
+  \param[in]   handle timer handle to operate.
+  \param[out]   value    timer reload value
+  \return      error code
+*/
+int32_t csi_timer_get_load_value(timer_handle_t handle, uint32_t *value);
+</code></pre>
+
+<ul>
+  <li>Be sure not to use function <code class="highlighter-rouge">csi_timer_suspend</code> since I found it actually an empty function and could only return error code.</li>
+</ul>
+
+<pre><code class="language-C++">/**
+  \brief       suspend timer.
+  \param[in]   instance  timer instance to operate.
+  \return      error code
+*/
+int32_t csi_timer_suspend(timer_handle_t handle)
+{
+    TIMER_NULL_PARAM_CHK(handle);
+
+    return ERR_TIMER(DRV_ERROR_UNSUPPORTED);
+}
+</code></pre>
+
+<h4 id="3-how-to-use-these-functions">3 How to use these functions</h4>
+
+<p>Now we have reached to the high points of this article, the use of Timer in wujian100 SoC.</p>
+
+<ol>
+  <li>
+    <p>Initialize timer handler. timer_num is the timer you would like to use, i.e. <code class="highlighter-rouge">0</code> for timer0, <code class="highlighter-rouge">1</code> for timer1, etc. And just like what we did in UART part, we had better write a callback function to deal with timer interrupt event call back.</p>
+
+    <pre><code class="language-C++"> timer_handle = csi_timer_initialize(timer_num, timer_event_cb_fun);
+</code></pre>
+  </li>
+  <li>
+    <p>configure timer as anyway you would like it to be.</p>
+
+    <pre><code class="language-C++"> csi_timer_config(timer_handle, TIMER_MODE_RELOAD);
+</code></pre>
+
+    <p>or for freerunning mode</p>
+
+    <pre><code class="language-C++"> csi_timer_config(timer_handle, TIMER_MODE_FREE_RUNNING);
+</code></pre>
+  </li>
+  <li>
+    <p>set timeout <code class="highlighter-rouge">only in reload mode</code>, timeout is in microseconds, i.e. us</p>
+
+    <pre><code class="language-C++"> csi_timer_set_timeout(timer_handle, timeout_us);
+</code></pre>
+  </li>
+  <li>
+    <p>start timer and say BINGO <strong>(must*)</strong> !</p>
+
+    <pre><code class="language-C++"> csi_timer_start(timer_handle);
+</code></pre>
+  </li>
+  <li>
+    <p>Remember to put something in callback function. Otherwise you would see nothing is happening. And more intriging thing in CDK is that stop points does not work in call back function which make it difficult to debug interrupt which I will write about in next article.</p>
+  </li>
+</ol>
+
+<ul>
+  <li>Note* It does not really matter if you say bingo or not.</li>
+</ul>
+:ET
