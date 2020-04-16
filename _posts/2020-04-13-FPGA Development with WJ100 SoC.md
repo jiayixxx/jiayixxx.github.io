@@ -82,7 +82,7 @@ The interrupt handler will send a request to VIC in CPU, and CPU will arrange th
 
 #### 4 What do we get in wujian100
 
-```C
+```c
     User_Software_IRQn              =   0,      /* User software interrupt */
     Supervisor_Software_IRQn        =   1,      /* Supervisor software interrupt */
     Machine_Software_IRQn           =   3,      /* Machine software interrupt */
@@ -120,7 +120,7 @@ According to enumerate type IRQn in soc.h, there are basically 10 types of inter
 
 To dig more, we could find functions that set VIC in `core_rv32.h`.
 
-```C
+```c
 /**
 /**
   \ingroup  CSI_Core_FunctionInterface
@@ -278,7 +278,7 @@ Fortunately, most of them are functions called by the system. Hence there are qu
 
 For example, we might only use `csi_vic_set_prio` in the interrupt configuration part.
 
-```C
+```c
 /**
   \brief   Set Interrupt Priority
   \details Set the priority of an interrupt.
