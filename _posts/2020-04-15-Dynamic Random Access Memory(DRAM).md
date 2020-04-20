@@ -1,10 +1,10 @@
 ---
 layout:     post
-title:      FPGA Development with wujian100 SoC
-subtitle:    "\"Part EIGHT: Interrupt(VIC)\""
+title:      Dynamic Random Access Memory
+subtitle:    "\"DRAM\""
 date:       2020-04-15
 author:     Jiayi
-header-img: img/20200326/zhixintongde.jpg
+header-img: img/dram/dram.jpg
 catalog: true
 tags:
     - DRAM
@@ -24,4 +24,5 @@ From figure 2.1, as we could see, DRAM is actually a 1T1C(one transistor and one
 
 However, this memory cell structure is non-volatile for two reason. For one, the voltage level of capacitor is hold due to its capacity of charges, but the charges will leak as time passed by. This process is basically due to the current leakage. Study shows, the major leakage paths in a DRAM cell are reverse junction leakage from the storage node and gate induced drain leakage (GIDL) current [1]. `need to fill`
 
+* Reference
 [1] u, J. and K. Aflatooni (2006). Leakage Current in DRAM Memory Cell. 2006 16th Biennial University/Government/Industry Microelectronics Symposium.
