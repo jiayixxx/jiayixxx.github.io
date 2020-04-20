@@ -298,7 +298,7 @@ __STATIC_INLINE void csi_vic_set_prio(int32_t IRQn, uint32_t priority)
 
 Luckily, although VIC is complicated inside the SoC, the usage is quite simple. All we need to do is simply add a line to set priority after configuring the interrupt, take timer as example.
 
-```C
+```c
 /*initialize timer handler*/
 timer_handle = csi_timer_initialize(timer_num, timer_event_cb_fun);
 /*config timer*/

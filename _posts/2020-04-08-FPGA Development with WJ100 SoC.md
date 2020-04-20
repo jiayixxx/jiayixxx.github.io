@@ -70,7 +70,7 @@ UART stands for universal asynchronous receiver-transmitter, however, wujian100 
 
 Open `.\csi_driver\wujian100_open\include\drv_usi_usart.h`, as we could see in the following external functions that we could call. They are expained quite elaborate by t-head Inc..
 
-```C++
+```c++
 /**
   \brief       Initialize USART Interface. 1. Initializes the resources needed for the USART interface 2.registers event callback function
   \param[in]   idx usart index
@@ -325,26 +325,26 @@ Now we have reached to the high points of this article, the use of UART in wujia
 
 1. Unitialize the UART in case pre-configuration has been done unpurposely.
 
-    ```C++
+    ```c++
     csi_usart_uninitialize(usart);
     ```
 
 2. Initialize usart handler and make sure to create a global handler.
 
-    ```C++
+    ```c++
      usart = csi_usart_initialize(uart_idx, (usart_event_cb_t)usart_event_cb);
      g_usart_handle = usart;
     ```
 
 3. Configure usart, in this case usart has been configured as asychronous mode without parity flag, with 115200 baud rate, one stop bits and eight data bits.
 
-    ```C++
+    ```c++
     ret = csi_usart_config(usart, 115200, USART_MODE_ASYNCHRONOUS, USART_PARITY_NONE, USART_STOP_BITS_1, USART_DATA_BITS_8);
     ```
 
 4. Then you have successfully configured USART. But before use, you need to create a call back function appeared in step 2 `usart_event_cb` which deals with interrupt callback code, i.e. However, it does not matter if you make it an empty function if you would like to process this callback event in your main function.
 
-    ```C++
+    ```c++
     /******************************************************************************
     * @brief      UART interrupt event call back function prototype for wujian100
     * @param[in]  idx     usart port to operate.

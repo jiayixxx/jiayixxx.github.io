@@ -69,7 +69,7 @@ In wujian100 SoC, there are 16 channels/timers which I am not sure about since t
 
 Timer is quite a simple module to use in wujian100 and hence it does not offer us many advanced options. Here is library for timer which could be found in `.\csi_driver\include\drv_timer.h`.
 
-```C
+```c
 /**
   \brief       Initialize TIMER Interface. 1. Initializes the resources needed for the TIMER interface 2.registers event callback function
   \param[in]   idx  timer index
@@ -164,7 +164,7 @@ int32_t csi_timer_get_load_value(timer_handle_t handle, uint32_t *value);
 
 * Be sure not to use function `csi_timer_suspend` since I found it actually an empty function and could only return error code.
 
-```C++
+```c++
 /**
   \brief       suspend timer.
   \param[in]   instance  timer instance to operate.
@@ -184,31 +184,31 @@ Now we have reached to the high points of this article, the use of Timer in wuji
 
 1. Initialize timer handler. timer_num is the timer you would like to use, i.e. `0` for timer0, `1` for timer1, etc. And just like what we did in UART part, we had better write a callback function to deal with timer interrupt event call back.
 
-    ```C++
+    ```c++
     timer_handle = csi_timer_initialize(timer_num, timer_event_cb_fun);
     ```
 
 2. configure timer as anyway you would like it to be.
 
-    ```C++
+    ```c++
     csi_timer_config(timer_handle, TIMER_MODE_RELOAD);
     ```
 
     or for freerunning mode
 
-    ```C++
+    ```c++
     csi_timer_config(timer_handle, TIMER_MODE_FREE_RUNNING);
     ```
 
 3. set timeout `only in reload mode`, timeout is in microseconds, i.e. us
 
-    ```C++
+    ```c++
     csi_timer_set_timeout(timer_handle, timeout_us);
     ```
 
 4. start timer and say BINGO **(must*)** !
 
-    ```C++
+    ```c++
     csi_timer_start(timer_handle);
     ```
 

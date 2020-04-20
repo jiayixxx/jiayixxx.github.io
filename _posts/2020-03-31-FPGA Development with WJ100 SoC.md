@@ -62,7 +62,7 @@ Open the cdk project we just built in Part 3. And open `main.c` Under folder mai
 
 Since it is an exclusively simple file, I would skip to expain what's what. However, you may have some probelm why `printf` function could make an output and where does this string goes to.
 
-```C++
+```c++
 /******************************************************************************
 * @file     main.c
 * @brief    hello world
@@ -84,7 +84,7 @@ int main(void)
 
 To reveal where printf function remaps, open `board_init.c` under path `./board/wujian100_open_evb` as we could see below.
 
-```C++
+```c++
 void board_init(void)
 {
     int32_t ret = 0;
@@ -108,7 +108,7 @@ usart is initiallized. And also, timer is initialized to make `delay` functional
 
 To dig deeper, right click variable `console_handle` and goto implementation. We could find this variable is defined in `minilibc_port.c` which gives a mapping function from usart to `fputc` and `fgetc` which make it easier to programm
 
-```C++
+```c++
 int fputc(int ch, FILE *stream)
 {
     (void)stream;
@@ -150,7 +150,7 @@ int fgetc(FILE *stream)
         ![step5.2](https://s1.ax1x.com/2020/04/06/GyjEh8.png)
 3. Since the UART has been configured as in the functions demonstrated in `3` which is
 
-    ```C++
+    ```c++
     Baud rate: 115200 //Baud rate with 115200
     Mode: USART_MODE_ASYNCHRONOUS //mode asychronous
     Parity: USART_PARITY_NONE //not using parity flag
