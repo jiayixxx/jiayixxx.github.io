@@ -2,7 +2,7 @@
 layout:     post
 title:      FPGA Development with wujian100 SoC
 subtitle:    "\"Part EIGHT: Interrupt(VIC)\""
-date:       2020-04-13
+date:       2020-04-15
 author:     Jiayi
 header-img: img/20200326/zhixintongde.jpg
 catalog: true
