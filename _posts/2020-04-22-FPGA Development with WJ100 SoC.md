@@ -11,7 +11,7 @@ tags:
     - SoC
 ---
 
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=398 height=52 src="//music.163.com/outchain/player?type=2&id=1402923356&auto=1&height=32"></iframe>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="398" height="52" src="//music.163.com/outchain/player?type=2&id=1402923356&auto=1&height=32"></iframe>
 A decent song for you.
 
 FPGA, short for Field-Programmable Gate Array, and SoC, short for System on Chip are recently always brought to the media for its widely appilication. This article will illustrate briefly about what is SoC and what is FPGA.
