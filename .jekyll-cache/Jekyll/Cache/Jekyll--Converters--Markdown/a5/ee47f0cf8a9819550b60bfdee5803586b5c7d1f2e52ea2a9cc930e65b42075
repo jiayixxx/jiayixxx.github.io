@@ -1,0 +1,382 @@
+I"�e<h2 id="fpga-development-with-wujian100-soc">FPGA Development with wujian100 SoC</h2>
+
+<h3 id="part-six-uart">Part Six: UART</h3>
+
+<p>Author: 加一(Jiayi)</p>
+
+<h2 id="something-to-say">Something to say</h2>
+
+<p>Recently I participate a contest named Integrate Circuit Innovation Contest which requires me to use WJ100 developed by Ali Inc. team t-head and a FPGA develop board with Xlinx XC7A200TR3B Core. It’s not my first time to cope with FPGA but still, I find it difficult to interpret Verilog Code and make the FPGA works. Luckily, with the help of WJ100 Sdk and CDK(C-sky Develop Kit) which developed by Ali Inc. we could jump the Verilog and long waiting synthesizing part directly to use the pre-setted circuit and easy writing C to develop.</p>
+
+<hr />
+
+<h2 id="about-wj100">About WJ100</h2>
+
+<blockquote>
+  <p>T-Head’s Wujian SoC Platform utilizes the cloud-terminal-integration design philosophy that fuses software and hardware. Full stack integration of chips, operating systems and algorithms enables customers to develop chip products that can be mass-production.</p>
+
+  <p>Low power consumption: User-defined power consumption scenarios, with standby power consumption of less than 1uA, and operating power consumption of less than 100uA/MHz</p>
+</blockquote>
+
+<p>According to the official sites of t-head Inc., WJ100 is a low cost and high power efficiency SoC, which barely means that it could be easily deployed on any chips and consumes lower power.</p>
+
+<p>However, as I talked before, it is a open source project and as I believed, the real function of this SoC is to simplify the use of FPGA and to offer the developer a brand new way to develop: integrate Soc and FPGA to deal with some projects which require both power efficiency and fast steady frequency.</p>
+
+<ul>
+  <li>related websites
+<a href="https://www.t-head.cn/">t-head</a></li>
+</ul>
+
+<h3 id="how-to-use-wj100-soc">How to use WJ100 SoC</h3>
+
+<p>This tutorial is for those who utilize vivado to generate bitstream file and CDK to develop your own projects on <em>Windows</em>.</p>
+
+<ul>
+  <li>
+    <p>For Part 1 Bitsream Generation please refer to <a href="https://shieldjy.github.io/2020/03/25/FPGA-Development-with-WJ100-SoC/">Part_1_Bitstream_Generation</a>.</p>
+  </li>
+  <li>
+    <p>For Part 2 CDK Toolkit and wujian100 SDK please refer to <a href="https://shieldjy.github.io/2020/03/27/FPGA-Development-with-WJ100-SoC/">Part_2_CDK_Toolkit&amp;Wujian100_SDK</a>.</p>
+  </li>
+  <li>
+    <p>For Part 3 Start a New Project on CDK please refer to <a href="https://shieldjy.github.io/2020/03/29/FPGA-Development-with-WJ100-SoC/">Part_3_Start_a_New_Project_on_CDK</a></p>
+  </li>
+  <li>
+    <p>For Part 4 Hello World please refer to <a href="https://shieldjy.github.io/2020/03/31/FPGA-Development-with-WJ100-SoC/">Part4_Hello_World</a></p>
+  </li>
+  <li>
+    <p>For Part 5 GPIO please refer to <a href="https://shieldjy.github.io/2020/04/06/FPGA-Development-with-WJ100-SoC/">Part5_GPIO</a></p>
+  </li>
+</ul>
+
+<h3 id="part-6-uart">Part 6 UART</h3>
+
+<h4 id="1-what-is-uart">1 What is UART</h4>
+
+<blockquote>
+  <p>A universal asynchronous receiver-transmitter (UART /ˈjuːɑːrt/) is a computer hardware device for asynchronous serial communication in which the data format and transmission speeds are configurable. The electric signaling levels and methods are handled by a driver circuit external to the UART.
+<em>wikipedia</em></p>
+</blockquote>
+
+<p>UART stands for universal asynchronous receiver-transmitter, however, wujian100 supports synchronous receiver and transmitter. It is more accurate to call it universal synchronous or asynchronous receiver-transmitter(USART). But we will follow UART since synchronous mode is quite useless unless you might want some high speed message or in other cases, we would prefer to use iic instead UART.</p>
+
+<ul>
+  <li>For more UART knowledge, please refer to <a href="https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter">wikipedia</a></li>
+</ul>
+
+<h4 id="2-let-us-see-what-we-have-got-in-library">2 Let us see what we have got in library</h4>
+
+<p>Open <code class="highlighter-rouge">.\csi_driver\wujian100_open\include\drv_usi_usart.h</code>, as we could see in the following external functions that we could call. They are expained quite elaborate by t-head Inc..</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+  \brief       Initialize USART Interface. 1. Initializes the resources needed for the USART interface 2.registers event callback function
+  \param[in]   idx usart index
+  \param[in]   cb_event  event call back function \ref usart_event_cb_t
+  \return      return usart handle if success
+*/</span>
+<span class="n">usart_handle_t</span> <span class="nf">drv_usi_usart_initialize</span><span class="p">(</span><span class="kt">int32_t</span> <span class="n">idx</span><span class="p">,</span> <span class="n">usart_event_cb_t</span> <span class="n">cb_event</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       De-initialize USART Interface. stops operation and releases the software resources used by the interface
+  \param[in]   handle  usart handle to operate.
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_uninitialize</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">);</span>
+<span class="cm">/**
+  \brief       Get driver capabilities.
+  \param[in]   idx usart index
+  \return      \ref usart_capabilities_t
+*/</span>
+<span class="n">usart_capabilities_t</span> <span class="nf">drv_usi_usart_get_capabilities</span><span class="p">(</span><span class="kt">int32_t</span> <span class="n">idx</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       config usart mode.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   baud      baud rate.
+  \param[in]   mode      \ref usart_mode_e .
+  \param[in]   parity    \ref usart_parity_e .
+  \param[in]   stopbits  \ref usart_stop_bits_e .
+  \param[in]   bits      \ref usart_data_bits_e .
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_config</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span>
+                             <span class="kt">uint32_t</span> <span class="n">baud</span><span class="p">,</span>
+                             <span class="n">usart_mode_e</span> <span class="n">mode</span><span class="p">,</span>
+                             <span class="n">usart_parity_e</span> <span class="n">parity</span><span class="p">,</span>
+                             <span class="n">usart_stop_bits_e</span> <span class="n">stopbits</span><span class="p">,</span>
+                             <span class="n">usart_data_bits_e</span> <span class="n">bits</span><span class="p">);</span>
+
+
+<span class="cm">/**
+  \brief       Start sending data to USART transmitter,(received data is ignored).
+               This function is non-blocking,\ref usart_event_e is signaled when operation completes or error happens.
+               \ref drv_usi_usart_get_status can get operation status.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   data  Pointer to buffer with data to send to USART transmitter. data_type is : uint8_t for 5..8 data bits, uint16_t for 9 data bits
+  \param[in]   num   Number of data items to send
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_send</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">num</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       Abort Send data to USART transmitter
+  \param[in]   handle  usart handle to operate.
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_abort_send</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       Start receiving data from USART receiver. \n
+               This function is non-blocking,\ref usart_event_e is signaled when operation completes or error happens.
+               \ref drv_usi_usart_get_status can get operation status.
+  \param[in]   handle  usart handle to operate.
+  \param[out]  data  Pointer to buffer for data to receive from USART receiver.data_type is : uint8_t for 5..8 data bits, uint16_t for 9 data bits
+  \param[in]   num   Number of data items to receive
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_receive</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">num</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       query data from UART receiver FIFO.
+  \param[in]   handle  usart handle to operate.
+  \param[out]  data  Pointer to buffer for data to receive from UART receiver
+  \param[in]   num   Number of data items to receive
+  \return      fifo data num to receive
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_receive_query</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">num</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       Abort Receive data from USART receiver
+  \param[in]   handle  usart handle to operate.
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_abort_receive</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       Start synchronously sends data to the USART transmitter and receives data from the USART receiver. used in synchronous mode
+               This function is non-blocking,\ref usart_event_e is signaled when operation completes or error happens.
+               \ref drv_usi_usart_get_status can get operation status.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   data_out  Pointer to buffer with data to send to USART transmitter.data_type is : uint8_t for 5..8 data bits, uint16_t for 9 data bits
+  \param[out]  data_in   Pointer to buffer for data to receive from USART receiver.data_type is : uint8_t for 5..8 data bits, uint16_t for 9 data bits
+  \param[in]   num       Number of data items to transfer
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_transfer</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data_out</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data_in</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">num</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       abort sending/receiving data to/from USART transmitter/receiver.
+  \param[in]   handle  usart handle to operate.
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_abort_transfer</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       Get USART status.
+  \param[in]   handle  usart handle to operate.
+  \return      USART status \ref usart_status_t
+*/</span>
+<span class="n">usart_status_t</span> <span class="nf">drv_usi_usart_get_status</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       flush receive/send data.
+  \param[in]   handle usart handle to operate.
+  \param[in]   type \ref usart_flush_type_e .
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_flush</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="n">usart_flush_type_e</span> <span class="n">type</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       set interrupt mode.
+  \param[in]   handle usart handle to operate.
+  \param[in]   type \ref usart_intr_type_e.
+  \param[in]   flag 0-OFF, 1-ON.
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_set_interrupt</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="n">usart_intr_type_e</span> <span class="n">type</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">flag</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       set the baud rate of usart.
+  \param[in]   baud  usart base to operate.
+  \param[in]   baudrate baud rate
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_config_baudrate</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">baud</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       config usart mode.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   mode    \ref usart_mode_e
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_config_mode</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="n">usart_mode_e</span> <span class="n">mode</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       config usart parity.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   parity    \ref usart_parity_e
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_config_parity</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="n">usart_parity_e</span> <span class="n">parity</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       config usart stop bit number.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   stopbits  \ref usart_stop_bits_e
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_config_stopbits</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="n">usart_stop_bits_e</span> <span class="n">stopbit</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       config usart data length.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   databits      \ref usart_data_bits_e
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_config_databits</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="n">usart_data_bits_e</span> <span class="n">databits</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       get character in query mode.
+  \param[in]   handle  usart handle to operate.
+  \param[out]  ch the pointer to the received character.
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_getchar</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">ch</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       transmit character in query mode.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   ch  the input character
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_putchar</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">ch</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       Get usart send data count.
+  \param[in]   handle  usart handle to operate.
+  \return      number of currently transmitted data bytes
+*/</span>
+<span class="kt">uint32_t</span> <span class="nf">drv_usi_usart_get_tx_count</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       Get usart received data count.
+  \param[in]   handle  usart handle to operate.
+  \return      number of currently received data bytes
+*/</span>
+<span class="kt">uint32_t</span> <span class="nf">drv_usi_usart_get_rx_count</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       control usart power.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   state   power state.\ref drv_usi_power_stat_e.
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_power_control</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="n">csi_power_stat_e</span> <span class="n">state</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       config usart flow control type.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   flowctrl_type   flow control type.\ref usart_flowctrl_type_e.
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_config_flowctrl</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span>
+                                      <span class="n">usart_flowctrl_type_e</span> <span class="n">flowctrl_type</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       config usart clock Polarity and Phase.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   cpol    Clock Polarity.\ref usart_cpol_e.
+  \param[in]   cpha    Clock Phase.\ref usart_cpha_e.
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_config_clock</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="n">usart_cpol_e</span> <span class="n">cpol</span><span class="p">,</span> <span class="n">usart_cpha_e</span> <span class="n">cpha</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       control the transmitter.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   enable  1 - enable the transmitter. 0 - disable the transmitter
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_control_tx</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">enable</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       control the receiver.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   enable  1 - enable the receiver. 0 - disable the receiver
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_control_rx</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">enable</span><span class="p">);</span>
+
+<span class="cm">/**
+  \brief       control the break.
+  \param[in]   handle  usart handle to operate.
+  \param[in]   enable  1- Enable continuous Break transmission,0 - disable continuous Break transmission
+  \return      error code
+*/</span>
+<span class="kt">int32_t</span> <span class="nf">drv_usi_usart_control_break</span><span class="p">(</span><span class="n">usart_handle_t</span> <span class="n">handle</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">enable</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="3-how-to-use-these-functions">3 How to use these functions</h4>
+
+<p>Now we have reached to the high points of this article, the use of UART in wujian100 SoC.</p>
+
+<ol>
+  <li>
+    <p>Unitialize the UART in case pre-configuration has been done unpurposely.</p>
+
+    <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">csi_usart_uninitialize</span><span class="p">(</span><span class="n">usart</span><span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Initialize usart handler and make sure to create a global handler.</p>
+
+    <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">usart</span> <span class="o">=</span> <span class="n">csi_usart_initialize</span><span class="p">(</span><span class="n">uart_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">usart_event_cb_t</span><span class="p">)</span><span class="n">usart_event_cb</span><span class="p">);</span>
+  <span class="n">g_usart_handle</span> <span class="o">=</span> <span class="n">usart</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Configure usart, in this case usart has been configured as asychronous mode without parity flag, with 115200 baud rate, one stop bits and eight data bits.</p>
+
+    <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">ret</span> <span class="o">=</span> <span class="n">csi_usart_config</span><span class="p">(</span><span class="n">usart</span><span class="p">,</span> <span class="mi">115200</span><span class="p">,</span> <span class="n">USART_MODE_ASYNCHRONOUS</span><span class="p">,</span> <span class="n">USART_PARITY_NONE</span><span class="p">,</span> <span class="n">USART_STOP_BITS_1</span><span class="p">,</span> <span class="n">USART_DATA_BITS_8</span><span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Then you have successfully configured USART. But before use, you need to create a call back function appeared in step 2 <code class="highlighter-rouge">usart_event_cb</code> which deals with interrupt callback code, i.e. However, it does not matter if you make it an empty function if you would like to process this callback event in your main function.</p>
+
+    <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="cm">/******************************************************************************
+ * @brief      UART interrupt event call back function prototype for wujian100
+ * @param[in]  idx     usart port to operate.
+ * @param[in]  event   event type.
+ * @author     Jiayi
+ * @return     None
+ ******************************************************************************/</span>
+ <span class="k">static</span> <span class="kt">void</span> <span class="nf">usart_event_cb</span><span class="p">(</span><span class="kt">int32_t</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">event</span><span class="p">)</span>
+ <span class="p">{</span>
+     <span class="kt">uint8_t</span> <span class="n">g_data</span><span class="p">[</span><span class="mi">15</span><span class="p">];</span>
+
+     <span class="k">switch</span> <span class="p">(</span><span class="n">event</span><span class="p">)</span> <span class="p">{</span>
+         <span class="k">case</span> <span class="n">USART_EVENT_SEND_COMPLETE</span><span class="p">:</span>
+             <span class="n">tx_async_flag</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+             <span class="k">break</span><span class="p">;</span>
+
+         <span class="k">case</span> <span class="n">USART_EVENT_RECEIVE_COMPLETE</span><span class="p">:</span>
+             <span class="n">rx_async_flag</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+             <span class="k">break</span><span class="p">;</span>
+
+         <span class="k">case</span> <span class="n">USART_EVENT_RECEIVED</span><span class="p">:</span>
+             <span class="n">csi_usart_receive_query</span><span class="p">(</span><span class="n">g_usart_handle</span><span class="p">,</span> <span class="n">g_data</span><span class="p">,</span> <span class="mi">15</span><span class="p">);</span>
+
+         <span class="nl">default:</span>
+             <span class="k">break</span><span class="p">;</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>How to use UART to output or input? Just use <code class="highlighter-rouge">printf</code> function and <code class="highlighter-rouge">fgetc</code> function since <code class="highlighter-rouge">board_init</code> file has helped us with the function remapping. For more details please refer to <a href="https://shieldjy.github.io/2020/03/31/FPGA-Development-with-WJ100-SoC/">Part4_Hello_World</a>.</p>
+  </li>
+  <li>
+    <p>I would come up with more about USART usage in the future.</p>
+  </li>
+</ol>
+:ET

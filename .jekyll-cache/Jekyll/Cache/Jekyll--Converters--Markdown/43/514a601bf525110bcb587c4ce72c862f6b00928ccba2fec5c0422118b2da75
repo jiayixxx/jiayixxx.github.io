@@ -1,0 +1,162 @@
+I"5.<h2 id="fpga-development-with-wujian100-soc">FPGA Development with wujian100 SoC</h2>
+
+<h3 id="part-four-hello-world">Part Four: Hello World</h3>
+
+<p>Author: 加一(Jiayi)</p>
+
+<h2 id="something-to-say">Something to say</h2>
+
+<p>Recently I participate a contest named Integrate Circuit Innovation Contest which requires me to use WJ100 developed by Ali Inc. team t-head and a FPGA develop board with Xlinx XC7A200TR3B Core. It’s not my first time to cope with FPGA but still, I find it difficult to interpret Verilog Code and make the FPGA works. Luckily, with the help of WJ100 Sdk and CDK(C-sky Develop Kit) which developed by Ali Inc. we could jump the Verilog and long waiting synthesizing part directly to use the pre-setted circuit and easy writing C to develop.</p>
+
+<hr />
+
+<h2 id="about-wj100">About WJ100</h2>
+
+<blockquote>
+  <p>T-Head’s Wujian SoC Platform utilizes the cloud-terminal-integration design philosophy that fuses software and hardware. Full stack integration of chips, operating systems and algorithms enables customers to develop chip products that can be mass-production.</p>
+
+  <p>Low power consumption: User-defined power consumption scenarios, with standby power consumption of less than 1uA, and operating power consumption of less than 100uA/MHz</p>
+</blockquote>
+
+<p>According to the official sites of t-head Inc., WJ100 is a low cost and high power efficiency SoC, which barely means that it could be easily deployed on any chips and consumes lower power.</p>
+
+<p>However, as I talked before, it is a open source project and as I believed, the real function of this SoC is to simplify the use of FPGA and to offer the developer a brand new way to develop: integrate Soc and FPGA to deal with some projects which require both power efficiency and fast steady frequency.</p>
+
+<ul>
+  <li>related websites
+<a href="https://www.t-head.cn/">t-head</a></li>
+</ul>
+
+<h3 id="how-to-use-wj100-soc">How to use WJ100 SoC</h3>
+
+<p>This tutorial is for those who utilize vivado to generate bitstream file and CDK to develop your own projects with <em>Windows</em>.</p>
+
+<ul>
+  <li>
+    <p>For Part 1 Bitsream Generation please refer to <a href="https://shieldjy.github.io/2020/03/25/FPGA-Development-with-WJ100-SoC/">Part_1_Bitstream_Generation</a>.</p>
+  </li>
+  <li>
+    <p>For Part 2 CDK Toolkit and wujian100 SDK please refer to <a href="https://shieldjy.github.io/2020/03/27/FPGA-Development-with-WJ100-SoC/">Part_2_CDK_Toolkit&amp;Wujian100_SDK</a>.</p>
+  </li>
+  <li>
+    <p>For Part 3 Start a New Project on CDK please refer to <a href="https://shieldjy.github.io/2020/03/29/FPGA-Development-with-WJ100-SoC/">Part_3_Start_a_New_Project_on_CDK</a></p>
+  </li>
+</ul>
+
+<h3 id="part-4-hello-world">Part 4 Hello World</h3>
+
+<p>After all that sruggles before, now we could finally write our programs by using CDK which is relatively simple if you have some background knowledge about working on Microprocessor, say STM32, Arduino or so. Let us strat with s simple Hello World project.</p>
+
+<h4 id="1-open-project">1 Open project</h4>
+
+<p>Open the cdk project we just built in Part 3. And open <code class="highlighter-rouge">main.c</code> Under folder main.</p>
+
+<h4 id="2-main-function">2 Main function</h4>
+
+<p>Since it is an exclusively simple file, I would skip to expain what’s what. However, you may have some probelm why <code class="highlighter-rouge">printf</code> function could make an output and where does this string goes to.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/******************************************************************************
+* @file     main.c
+* @brief    hello world
+* @version  V1.0
+* @date     31. Mar. 2020
+******************************************************************************/</span>
+
+<span class="cp">#include &lt;stdio.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Hello World!</span><span class="se">\n</span><span class="s"> --example by jiayi</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="3-why-this-simple">3 Why this simple</h4>
+
+<p>To reveal where printf function remaps, open <code class="highlighter-rouge">board_init.c</code> under path <code class="highlighter-rouge">./board/wujian100_open_evb</code> as we could see below.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">board_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int32_t</span> <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="cm">/* init the console*/</span>
+    <span class="n">clock_timer_init</span><span class="p">();</span>
+    <span class="n">clock_timer_start</span><span class="p">();</span>
+
+    <span class="n">console_handle</span> <span class="o">=</span> <span class="n">csi_usart_initialize</span><span class="p">(</span><span class="n">CONSOLE_IDX</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="cm">/* config the UART */</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">csi_usart_config</span><span class="p">(</span><span class="n">console_handle</span><span class="p">,</span> <span class="mi">115200</span><span class="p">,</span> <span class="n">USART_MODE_ASYNCHRONOUS</span><span class="p">,</span> <span class="n">USART_PARITY_NONE</span><span class="p">,</span> <span class="n">USART_STOP_BITS_1</span><span class="p">,</span> <span class="n">USART_DATA_BITS_8</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>usart is initiallized. And also, timer is initialized to make <code class="highlighter-rouge">delay</code> functionale.</p>
+
+<h4 id="4-let-us-dig-deeper">4 Let us dig deeper</h4>
+
+<p>To dig deeper, right click variable <code class="highlighter-rouge">console_handle</code> and goto implementation. We could find this variable is defined in <code class="highlighter-rouge">minilibc_port.c</code> which gives a mapping function from usart to <code class="highlighter-rouge">fputc</code> and <code class="highlighter-rouge">fgetc</code> which make it easier to programm</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">fputc</span><span class="p">(</span><span class="kt">int</span> <span class="n">ch</span><span class="p">,</span> <span class="kt">FILE</span> <span class="o">*</span><span class="n">stream</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">stream</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">console_handle</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">ch</span> <span class="o">==</span> <span class="sc">'\n'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">csi_usart_putchar</span><span class="p">(</span><span class="n">console_handle</span><span class="p">,</span> <span class="sc">'\r'</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">csi_usart_putchar</span><span class="p">(</span><span class="n">console_handle</span><span class="p">,</span> <span class="n">ch</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">fgetc</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">stream</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">ch</span><span class="p">;</span>
+    <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">stream</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">console_handle</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">csi_usart_getchar</span><span class="p">(</span><span class="n">console_handle</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ch</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">ch</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<h4 id="5-how-to-run-this-project">5 How to run this project</h4>
+
+<ol>
+  <li>Open CDK project as direction above and make sure to open <code class="highlighter-rouge">serial panel</code> to receive message.
+     <img src="https://s1.ax1x.com/2020/04/06/Gyji7t.png" alt="step5.1" /></li>
+  <li>Right click on serial panel and choose <code class="highlighter-rouge">settings</code>.
+     <img src="https://s1.ax1x.com/2020/04/06/GyjEh8.png" alt="step5.2" /></li>
+  <li>
+    <p>Since the UART has been configured as in the functions demonstrated in <code class="highlighter-rouge">3</code> which is</p>
+
+    <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">Baud</span> <span class="n">rate</span><span class="o">:</span> <span class="mi">115200</span> <span class="c1">//Baud rate with 115200</span>
+ <span class="n">Mode</span><span class="o">:</span> <span class="n">USART_MODE_ASYNCHRONOUS</span> <span class="c1">//mode asychronous</span>
+ <span class="n">Parity</span><span class="o">:</span> <span class="n">USART_PARITY_NONE</span> <span class="c1">//not using parity flag</span>
+ <span class="n">Stop</span> <span class="n">bits</span><span class="o">:</span> <span class="n">USART_STOP_BITS_1</span> <span class="c1">//1 stop bits</span>
+ <span class="n">Data</span> <span class="n">bits</span><span class="o">:</span> <span class="n">USART_DATA_BITS_8</span> <span class="c1">//8 data bits</span>
+</code></pre></div>    </div>
+
+    <p>Hence we must configure the serial panel with same configuration. And do not forget to check which com port your device uses, or you could test one by one.
+     <img src="https://s1.ax1x.com/2020/04/06/GyjCnA.png" alt="step5.3" /></p>
+  </li>
+  <li>
+    <p>Click <code class="highlighter-rouge">ok</code> and you should have successfully finished your serial configuration. And your serial panel should be like
+     <img src="https://s1.ax1x.com/2020/04/06/GyjkAP.png" alt="step5.4" /></p>
+  </li>
+  <li>Run the project with the debugger and start debug. And as you could see below, success!
+     <img src="https://s1.ax1x.com/2020/04/06/GyjP0I.png" alt="step5.5" /></li>
+</ol>
+:ET
