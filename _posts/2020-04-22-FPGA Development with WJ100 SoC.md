@@ -11,6 +11,8 @@ tags:
     - SoC
 ---
 
+<embed autostart="true" hidden="true" loop="true" src="http://freetyst.nf.migu.cn/public/product8th/product38/2019/12/2016/2019%E5%B9%B412%E6%9C%8813%E6%97%A520%E7%82%B915%E5%88%86%E6%89%B9%E9%87%8F%E9%A1%B9%E7%9B%AESONY99%E9%A6%96-2/%E6%A0%87%E6%B8%85%E9%AB%98%E6%B8%85/MP3_320_16_Stero/6005972SD2Y.mp3?channelid=03&k=37bb1df53c4d5552&t=1587796728&msisdn=ec738d40-49ff-44a2-a8d0-3ee2f7e5bf0f.mp3"></embed>
+
 FPGA, short for Field-Programmable Gate Array, and SoC, short for System on Chip are recently always brought to the media for its widely appilication. This article will illustrate briefly about what is SoC and what is FPGA.
 
 ## System on Chip (SoC)
