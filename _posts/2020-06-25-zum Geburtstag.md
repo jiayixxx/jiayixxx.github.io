@@ -13,7 +13,7 @@ tags:
 
 
 
-<iframe idth="1024" height="768"iframe src="//player.bilibili.com/player.html?aid=498593988&bvid=BV1wK411W7AD&cid=205176838&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+<iframe idth="1024" height="768"iframe src="http://player.bilibili.com/player.html?aid=498593988&bvid=BV1wK411W7AD&cid=205176838&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 
 
 
@@ -27,7 +27,7 @@ tags:
 
 
 
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=128 height=450 src="//music.163.com/outchain/player?type=1&id=34408236&auto=1&height=430"></iframe>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=128 height=450 src="http://music.163.com/outchain/player?type=1&id=34408236&auto=1&height=430"></iframe>
 
 👆👆👆👆👆👆👆👆
 
