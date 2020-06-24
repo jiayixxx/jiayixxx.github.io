@@ -28,6 +28,7 @@ tags:
 
 
 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=128 height=450 src="https://music.163.com/outchain/player?type=1&amp;&id=34408236&amp;&auto=1;height=430"></iframe>
+<iframe width="128" height="450" src="//music.163.com/outchain/player?type=1&amp;id=34408236&amp;auto=0&amp;height=430" frameborder="0" > </iframe>
 
 👆👆👆👆👆👆👆👆
 
