@@ -13,7 +13,7 @@ tags:
 
 
 
-<iframe idth="1024" height="768"iframe src="https://player.bilibili.com/player.html?aid=498593988&bvid=BV1wK411W7AD&cid=205176838&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+<iframe width="1024" height="768"iframe src="//player.bilibili.com/player.html?aid=498593988&bvid=BV1wK411W7AD&cid=205176838&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 
 
 
@@ -26,9 +26,7 @@ tags:
 ![NdTPNF.md.png](https://s1.ax1x.com/2020/06/24/NdTPNF.md.png)
 
 
-
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=128 height=450 src="https://music.163.com/outchain/player?type=1&amp;&id=34408236&amp;&auto=1;height=430"></iframe>
-<iframe width="128" height="450" src="//music.163.com/outchain/player?type=1&amp;id=34408236&amp;auto=0&amp;height=430" frameborder="0" > </iframe>
+<iframe width="256" height="450" src="//music.163.com/outchain/player?type=1&amp;id=34408236&amp;auto=0&amp;height=430" frameborder="0" > </iframe>
 
 👆👆👆👆👆👆👆👆
 
