@@ -6,7 +6,7 @@ subtitle:    "\"某然同学\""
 date:       2020-06-25
 author:     不告诉你
 header-img: img/oldpic.jpg
-catalog: true
+catalog: false
 tags:
     - 某然
 ---
@@ -15,7 +15,7 @@ tags:
 
 <iframe width="1024" height="768" src="//player.bilibili.com/player.html?aid=838599761&bvid=BV1Mg4y1v7F4&cid=205205807&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 
-*为获得更好观看体验，请移步[给某然的生日礼物](https://www.bilibili.com/video/BV1Mg4y1v7F4/) 观看！
+*为获得更好观看体验，请移步[给某然的生日礼物](https://www.bilibili.com/video/BV1Mg4y1v7F4/) 观看！*
 
 
 今年二十几岁了呢小朋友？
@@ -49,9 +49,7 @@ tags:
 
 也没法偷偷送你礼物啦
 
-偷偷学了怎么做难看的网页 怎么弹爆音的吉他 怎么用b站乱剪视频 怎么把音频搞得一塌糊涂
-
-但总之还是搞出来这个算是可以接受的视频
+总之还是在不想学习无限摸鱼的时候搞出来这个算是可以接受的视频
 
 所以 就像在视频简介里说的那样
 
