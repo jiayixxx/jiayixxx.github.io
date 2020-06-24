@@ -14,7 +14,6 @@ tags:
 
 
 <iframe width="1024" height="768" src="//player.bilibili.com/player.html?aid=498593988&bvid=BV1wK411W7AD&cid=205176838&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
-<iframe width="640" height="480" src="//player.bilibili.com/player.html?aid=1067674&cid=1544341&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 
 
 今年二十几岁了呢小朋友？
